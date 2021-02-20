@@ -5,13 +5,13 @@ import com.squareup.moshi.JsonClass
 @JsonClass(generateAdapter = true)
 data class DayEntity(
     @Json(name = "peipsi")
-    val peipsi: String,
+    val peipsi: String?,
     @Json(name = "phenomenon")
     val phenomenon: String,
     @Json(name = "places")
-    val places: List<PlaceEntity>,
+    val places: List<PlaceEntity>?,
     @Json(name = "sea")
-    val sea: String,
+    val sea: String?,
     @Json(name = "tempmax")
     val tempmax: Int,
     @Json(name = "tempmin")
@@ -19,5 +19,5 @@ data class DayEntity(
     @Json(name = "text")
     val text: String,
     @Json(name = "winds")
-    val winds: List<WindEntity>
+    val winds: List<WindEntity>?
 )

@@ -9,7 +9,7 @@ data class PlaceEntity(
     @Json(name = "phenomenon")
     val phenomenon: String,
     @Json(name = "tempmax")
-    val tempmax: Int,
+    val tempmax: Int?,
     @Json(name = "tempmin")
-    val tempmin: Int
+    val tempmin: Int?
 )
