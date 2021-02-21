@@ -1,8 +1,9 @@
-package com.moon.moonweather
+package com.moon.moonweather.feature.main
 
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import com.moon.moonweather.R
 import com.moon.moonweather.componentprovider.main.MainComponentProvider
 import com.moon.moonweather.navigation.MainFlowScreens
 import com.moon.moonweather.views.GlobalLoading
@@ -28,7 +29,7 @@ class MainActivity : AppCompatActivity(), GlobalLoading {
         setContentView(R.layout.activity_main)
         MainComponentProvider.get().inject(this)
 
-        navigator = SupportAppNavigator(this, R.id.container)
+        navigator = SupportAppNavigator(this, R.id.main_container)
         router.newRootScreen(MainFlowScreens.HomeScreen())
     }
 

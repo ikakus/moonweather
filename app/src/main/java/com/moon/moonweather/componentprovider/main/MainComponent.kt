@@ -1,8 +1,8 @@
 package com.moon.moonweather.componentprovider.main
 
-import com.moon.moonweather.MainActivity
 import com.moon.moonweather.componentprovider.app.AppComponent
-import com.moon.moonweather.core.di.Screen
+import com.moon.moonweather.core.di.Feature
+import com.moon.moonweather.feature.main.MainActivity
 import com.moon.moonweather.navigation.NavigationModule
 import dagger.Component
 
@@ -12,7 +12,7 @@ import dagger.Component
     ],
     dependencies = [AppComponent::class]
 )
-@Screen
+@Feature
 interface MainComponent {
     fun inject(mainActivity: MainActivity)
 }
