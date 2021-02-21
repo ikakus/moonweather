@@ -1,7 +1,10 @@
 package com.moon.moonweather.feature.forecast
 
-import androidx.fragment.app.Fragment
 import com.moon.moonweather.R
+import com.moon.moonweather.core.base.BaseFragment
 
-class ForecastFragment : Fragment(R.layout.fragment_forecast) {
+class ForecastFragment : BaseFragment<UiEvent, UiModel>(R.layout.fragment_forecast) {
+    override fun accept(t: UiModel?) {
+        TODO("Not yet implemented")
+    }
 }

@@ -2,10 +2,10 @@ package com.moon.moonweather.core.base
 
 import androidx.annotation.LayoutRes
 import androidx.fragment.app.Fragment
-import io.reactivex.rxjava3.core.ObservableSource
-import io.reactivex.rxjava3.core.Observer
-import io.reactivex.rxjava3.functions.Consumer
-import io.reactivex.rxjava3.subjects.PublishSubject
+import io.reactivex.ObservableSource
+import io.reactivex.Observer
+import io.reactivex.functions.Consumer
+import io.reactivex.subjects.PublishSubject
 
 abstract class BaseFragment<Event, Model>(@LayoutRes contentLayoutId: Int) :
     Fragment(contentLayoutId),
