@@ -10,23 +10,19 @@ import com.squareup.moshi.JsonClass
 @JsonClass(generateAdapter = true)
 data class DayEntity(
     @Json(name = "peipsi")
-    val peipsi: String?,
+    override val peipsi: String?,
     @Json(name = "phenomenon")
-    val phenomenon: String,
+    override val phenomenon: String,
     @Json(name = "places")
-    val places: List<PlaceDomainModel>?,
+    override val places: List<PlaceDomainModel>?,
     @Json(name = "sea")
-    val sea: String?,
+    override val sea: String?,
     @Json(name = "tempmax")
-    val tempmax: Int,
+    override val tempmax: Int,
     @Json(name = "tempmin")
-    val tempmin: Int,
+    override val tempmin: Int,
     @Json(name = "text")
-    val text: String,
+    override val text: String,
     @Json(name = "winds")
-    val winds: List<WindDomainModel>?
-) : Entity {
-    override fun mapToDomain(): DayDomainModel {
-        TODO("Not yet implemented")
-    }
-}
+    override val winds: List<WindDomainModel>?
+) : Entity, DayDomainModel

@@ -8,15 +8,11 @@ import com.squareup.moshi.JsonClass
 @JsonClass(generateAdapter = true)
 data class WindEntity(
     @Json(name = "direction")
-    val direction: String,
+    override val direction: String,
     @Json(name = "name")
-    val name: String,
+    override val name: String,
     @Json(name = "speedmax")
-    val speedmax: Int,
+    override val speedmax: Int,
     @Json(name = "speedmin")
-    val speedmin: Int
-) : Entity {
-    override fun mapToDomain(): WindDomainModel {
-        TODO("Not yet implemented")
-    }
-}
+    override val speedmin: Int
+) : Entity, WindDomainModel

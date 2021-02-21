@@ -8,15 +8,11 @@ import com.squareup.moshi.JsonClass
 @JsonClass(generateAdapter = true)
 data class PlaceEntity(
     @Json(name = "name")
-    val name: String,
+    override val name: String,
     @Json(name = "phenomenon")
-    val phenomenon: String,
+    override val phenomenon: String,
     @Json(name = "tempmax")
-    val tempmax: Int?,
+    override val tempmax: Int?,
     @Json(name = "tempmin")
-    val tempmin: Int?
-) : Entity {
-    override fun mapToDomain(): PlaceDomainModel {
-        TODO("Not yet implemented")
-    }
-}
+    override val tempmin: Int?
+) : Entity, PlaceDomainModel

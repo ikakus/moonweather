@@ -1,5 +1,6 @@
-package com.moon.data.forecast
+package com.moon.data.forecast.datasource
 
+import com.moon.data.ConnectivityProvider
 import com.moon.domain.forecast.ForecastRepository
 import com.moon.domain.forecast.model.ForecastDomainModel
 import io.reactivex.Single
@@ -16,22 +17,4 @@ class ForecastRepositoryImpl(
             localForecastDataProvider.get4DaysForecast()
         }
     }
-}
-
-class RemoteForecastDataProvider : ForecastRepository {
-    override fun get4DaysForecast(): Single<ForecastDomainModel> {
-        TODO("Not yet implemented")
-    }
-
-}
-
-class LocalForecastDataProvider : ForecastRepository {
-    override fun get4DaysForecast(): Single<ForecastDomainModel> {
-        TODO("Not yet implemented")
-    }
-
-}
-
-interface ConnectivityProvider {
-    fun isInternetAvailable(): Boolean
 }

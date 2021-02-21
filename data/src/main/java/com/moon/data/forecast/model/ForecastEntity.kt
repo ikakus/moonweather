@@ -9,13 +9,9 @@ import com.squareup.moshi.JsonClass
 @JsonClass(generateAdapter = true)
 data class ForecastEntity(
     @Json(name = "date")
-    val date: String,
+    override val date: String,
     @Json(name = "day")
-    val day: DayDomainModel,
+    override val day: DayDomainModel,
     @Json(name = "night")
-    val night: DayDomainModel
-) : Entity {
-    override fun mapToDomain(): ForecastDomainModel {
-        TODO("Not yet implemented")
-    }
-}
+    override val night: DayDomainModel
+) : Entity, ForecastDomainModel
