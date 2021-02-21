@@ -1,4 +1,7 @@
-package com.moon.data.base.model.forecast
+package com.moon.data.forecast.model
+
+import com.moon.data.base.Entity
+import com.moon.domain.forecast.model.PlaceDomainModel
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 
@@ -12,4 +15,8 @@ data class PlaceEntity(
     val tempmax: Int?,
     @Json(name = "tempmin")
     val tempmin: Int?
-)
+) : Entity {
+    override fun mapToDomain(): PlaceDomainModel {
+        TODO("Not yet implemented")
+    }
+}
