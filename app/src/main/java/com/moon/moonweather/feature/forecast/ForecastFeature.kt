@@ -1,6 +1,7 @@
 package com.moon.moonweather.feature.forecast
 
 import com.badoo.mvicore.element.Actor
+import com.badoo.mvicore.element.Bootstrapper
 import com.badoo.mvicore.element.NewsPublisher
 import com.badoo.mvicore.element.Reducer
 import com.badoo.mvicore.feature.ActorReducerFeature
@@ -16,7 +17,8 @@ class ForecastFeature(
         initialState = State(loading = false),
         reducer = ReducerImpl(),
         actor = ActorImpl(getForecastUseCase),
-        newsPublisher = NewsPublisherImpl()
+        newsPublisher = NewsPublisherImpl(),
+        bootstrapper = BootstrapperImpl()
     ) {
 
     private class ReducerImpl : Reducer<State, Effect> {
@@ -33,6 +35,7 @@ class ForecastFeature(
         Actor<State, Wish, Effect> {
         override fun invoke(state: State, wish: Wish): Observable<Effect> = when (wish) {
             Wish.DayDetails -> details(state)
+            Wish.LoadData -> details(state)
         }
 
         private fun details(state: State): Observable<Effect> {
@@ -50,13 +53,15 @@ class ForecastFeature(
 
     private class NewsPublisherImpl : NewsPublisher<Wish, Effect, State, News> {
         override fun invoke(wish: Wish, effect: Effect, state: State): News? {
-            when (wish) {
-                is Wish.DayDetails -> return News.Details
+            return when (wish) {
+                is Wish.DayDetails -> News.Details
+                else -> null
             }
         }
     }
 
     sealed class Wish {
+        object LoadData : Wish()
         object DayDetails : Wish()
     }
 
@@ -68,10 +73,16 @@ class ForecastFeature(
 
     data class State(
         val loading: Boolean = false,
-        val text: String = ""
+        val text: String = "initial"
     )
 
     sealed class News {
         object Details : News()
+    }
+
+    private class BootstrapperImpl : Bootstrapper<Wish> {
+        override fun invoke(): Observable<Wish> {
+            return Observable.just(Wish.LoadData)
+        }
     }
 }
