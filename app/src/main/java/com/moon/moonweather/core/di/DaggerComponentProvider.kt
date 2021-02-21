@@ -13,7 +13,7 @@ abstract class DaggerComponentProvider<T> {
         return component!!
     }
 
-    fun dependAndGet(subScope: DaggerComponentProvider<*>): T? {
+    fun dependAndGet(subScope: DaggerComponentProvider<*>): T {
         subScopes.add(WeakReference(subScope))
         return get()
     }
