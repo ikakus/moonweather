@@ -1,4 +1,4 @@
-package com.moon.domain.base
+package com.moon.moonweather.core.di
 
 import javax.inject.Scope
 

@@ -1,4 +1,4 @@
-package com.moon.moonweather.core
+package com.moon.moonweather.core.di
 
 import java.lang.ref.WeakReference
 
