@@ -5,6 +5,7 @@ import com.moon.moonweather.core.di.Feature
 import com.moon.moonweather.feature.main.MainActivity
 import com.moon.moonweather.navigation.NavigationModule
 import dagger.Component
+import ru.terrakok.cicerone.Router
 
 @Component(
     modules = [
@@ -14,5 +15,6 @@ import dagger.Component
 )
 @Feature
 interface MainComponent {
+    fun router(): Router
     fun inject(mainActivity: MainActivity)
 }

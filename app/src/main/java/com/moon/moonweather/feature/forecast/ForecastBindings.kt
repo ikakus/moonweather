@@ -49,6 +49,7 @@ private class UiModelTransformer(val context: Context) : (ForecastFeature.State)
     override fun invoke(state: ForecastFeature.State): UiModel {
         return UiModel(
             loading = state.loading,
+            text = state.text
         )
     }
 }
@@ -58,5 +59,6 @@ sealed class UiEvent {
 }
 
 data class UiModel(
-    val loading: Boolean
+    val loading: Boolean,
+    val text: String
 )
