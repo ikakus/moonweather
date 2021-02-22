@@ -6,6 +6,6 @@ interface ConnectivityProvider {
 
 class ConnectivityProviderImpl : ConnectivityProvider {
     override fun isInternetAvailable(): Boolean {
-        return false
+        return true
     }
 }

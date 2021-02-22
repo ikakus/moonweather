@@ -1,5 +1,7 @@
 package com.moon.domain.forecast.model
 
-data class ForecastListDomainModel(
+import com.moon.domain.base.DomainModel
+
+interface ForecastListDomainModel : DomainModel {
     val forecasts: List<ForecastDomainModel>
-)
+}

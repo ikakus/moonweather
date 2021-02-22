@@ -1,6 +1,11 @@
 package com.moon.moonweather.feature.forecast
 
+import com.moon.data.ConnectivityProvider
+import com.moon.data.ConnectivityProviderImpl
+import com.moon.data.ForecastApi
+import com.moon.data.forecast.datasource.ForecastRepositoryImpl
 import com.moon.data.forecast.datasource.LocalForecastDataProvider
+import com.moon.data.forecast.datasource.RemoteForecastDataProvider
 import com.moon.domain.forecast.ForecastRepository
 import com.moon.domain.forecast.usecase.GetForecastUseCase
 import dagger.Module
@@ -20,8 +25,33 @@ class ForecastModule {
     }
 
     @Provides
-    fun provideForecastRepository(): ForecastRepository {
+    fun provideForecastRepository(
+        localForecastDataProvider: LocalForecastDataProvider,
+        remoteForecastDataProvider: RemoteForecastDataProvider,
+        connectivityProvider: ConnectivityProvider
+    ): ForecastRepository {
+
+        return ForecastRepositoryImpl(
+            localForecastDataProvider = localForecastDataProvider,
+            remoteForecastDataProvider = remoteForecastDataProvider,
+            connectivityProvider = connectivityProvider
+        )
+    }
+
+    @Provides
+    fun provideConnectivityProvider(): ConnectivityProvider {
+        return ConnectivityProviderImpl()
+    }
+
+
+    @Provides
+    fun provideLocalForecastProvider(): LocalForecastDataProvider {
         return LocalForecastDataProvider()
+    }
+
+    @Provides
+    fun provideRemoteForecastProvider(forecastApi: ForecastApi): RemoteForecastDataProvider {
+        return RemoteForecastDataProvider(forecastApi)
     }
 
     @Provides

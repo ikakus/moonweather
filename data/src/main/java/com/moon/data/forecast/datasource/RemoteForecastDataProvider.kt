@@ -1,12 +1,15 @@
 package com.moon.data.forecast.datasource
 
+import com.moon.data.ForecastApi
 import com.moon.domain.forecast.ForecastRepository
-import com.moon.domain.forecast.model.ForecastDomainModel
+import com.moon.domain.forecast.model.ForecastListDomainModel
 import io.reactivex.Single
 
-class RemoteForecastDataProvider : ForecastRepository {
-    override fun get4DaysForecast(): Single<ForecastDomainModel> {
-        TODO("Not yet implemented")
+class RemoteForecastDataProvider(private val api: ForecastApi) : ForecastRepository {
+    override fun get4DaysForecast(): Single<ForecastListDomainModel> {
+        return api.get4DaysForecast().map {
+            it as ForecastListDomainModel
+        }
     }
 
 }

@@ -2,8 +2,6 @@ package com.moon.data.forecast.model
 
 import com.moon.data.base.Entity
 import com.moon.domain.forecast.model.DayDomainModel
-import com.moon.domain.forecast.model.PlaceDomainModel
-import com.moon.domain.forecast.model.WindDomainModel
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 
@@ -14,7 +12,7 @@ data class DayEntity(
     @Json(name = "phenomenon")
     override val phenomenon: String,
     @Json(name = "places")
-    override val places: List<PlaceDomainModel>?,
+    override val places: List<PlaceEntity>?,
     @Json(name = "sea")
     override val sea: String?,
     @Json(name = "tempmax")
@@ -24,5 +22,5 @@ data class DayEntity(
     @Json(name = "text")
     override val text: String,
     @Json(name = "winds")
-    override val winds: List<WindDomainModel>?
+    override val winds: List<WindEntity>?
 ) : Entity, DayDomainModel
