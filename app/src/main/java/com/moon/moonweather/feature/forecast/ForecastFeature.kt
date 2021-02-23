@@ -24,8 +24,8 @@ class ForecastFeature(
     private class ReducerImpl : Reducer<State, Effect> {
         override fun invoke(state: State, effect: Effect): State {
             return when (effect) {
-                Effect.Loading -> state
-                is Effect.DataLoaded -> state.copy(text = effect.data)
+                Effect.Loading -> state.copy(loading = true)
+                is Effect.DataLoaded -> state.copy(text = effect.data, loading = false)
                 Effect.Error -> TODO()
             }
         }
