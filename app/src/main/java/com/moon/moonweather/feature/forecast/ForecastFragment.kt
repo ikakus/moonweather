@@ -2,10 +2,11 @@ package com.moon.moonweather.feature.forecast
 
 import android.os.Bundle
 import android.view.View
-import android.widget.Toast
 import com.moon.moonweather.R
 import com.moon.moonweather.componentprovider.forecast.ForecastComponentProvider
 import com.moon.moonweather.core.base.BaseFragment
+import com.moon.moonweather.views.loading
+import kotlinx.android.synthetic.main.fragment_forecast.*
 import javax.inject.Inject
 
 class ForecastFragment : BaseFragment<UiEvent, UiModel>(R.layout.fragment_forecast) {
@@ -20,7 +21,7 @@ class ForecastFragment : BaseFragment<UiEvent, UiModel>(R.layout.fragment_foreca
     }
 
     override fun accept(t: UiModel) {
-        Toast.makeText(requireContext(), t.text, Toast.LENGTH_SHORT).show()
-
+        forecast_text.text = t.text
+        loading(t.loading)
     }
 }

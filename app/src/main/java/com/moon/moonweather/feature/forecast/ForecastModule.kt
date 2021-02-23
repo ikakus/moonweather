@@ -8,6 +8,7 @@ import com.moon.data.forecast.datasource.LocalForecastDataProvider
 import com.moon.data.forecast.datasource.RemoteForecastDataProvider
 import com.moon.domain.forecast.ForecastRepository
 import com.moon.domain.forecast.usecase.GetForecastUseCase
+import com.moon.moonweather.core.di.Screen
 import dagger.Module
 import dagger.Provides
 import ru.terrakok.cicerone.Router
@@ -15,11 +16,13 @@ import ru.terrakok.cicerone.Router
 @Module
 class ForecastModule {
     @Provides
+    @Screen
     fun bindings(router: Router, feature: ForecastFeature): ForecastBindings {
         return ForecastBindings(router, feature)
     }
 
     @Provides
+    @Screen
     fun provideForecastFeature(getForecastUseCase: GetForecastUseCase): ForecastFeature {
         return ForecastFeature(getForecastUseCase)
     }
