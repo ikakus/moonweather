@@ -40,6 +40,11 @@ class UiModelTransformer(val context: Context) : (ForecastFeature.State) -> UiMo
         ) {
             return R.drawable.day_rain
         }
+
+        if (phenomenon.contains("snow", true)) {
+            return R.drawable.day_snow
+        }
+
         return R.drawable.day_clear
     }
 
@@ -48,9 +53,15 @@ class UiModelTransformer(val context: Context) : (ForecastFeature.State) -> UiMo
         if (phenomenon.contains("shower", true) ||
             phenomenon.contains("rain", true)
         ) {
-            return R.drawable.night_full_moon_rain
+            return R.drawable.night_half_moon_rain
         }
-        return R.drawable.night_full_moon_clear
+
+
+        if (phenomenon.contains("snow", true)) {
+            return R.drawable.night_half_moon_snow
+        }
+
+        return R.drawable.night_half_moon_clear
     }
 }
 

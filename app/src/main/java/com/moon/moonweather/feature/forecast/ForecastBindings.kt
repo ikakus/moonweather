@@ -36,7 +36,8 @@ class NewsListener(
 
     override fun accept(news: ForecastFeature.News) {
         when (news) {
-            is ForecastFeature.News.Details -> router.newRootScreen(MainFlowScreens.HomeScreen())
+            is ForecastFeature.News.PlaceWeatherDetails -> router.newRootScreen(MainFlowScreens.HomeScreen())
+            is ForecastFeature.News.ErrorMessage -> errorHappened(news.throwable)
         }
     }
 

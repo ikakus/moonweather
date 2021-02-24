@@ -27,7 +27,8 @@ class ForecastFeature(
             return when (effect) {
                 Effect.Loading -> state.copy(loading = true)
                 is Effect.DataLoaded -> state.copy(forecastData = effect.data, loading = false)
-                Effect.Error -> TODO()
+                is Effect.Error -> state.copy(loading = false)
+                else -> state
             }
         }
     }
@@ -35,9 +36,9 @@ class ForecastFeature(
     private class ActorImpl(private val getForecastUseCase: GetForecastUseCase) :
         Actor<State, Wish, Effect> {
         override fun invoke(state: State, wish: Wish): Observable<Effect> = when (wish) {
-            Wish.DayDetails -> TODO()
             Wish.LoadData -> loadForecast()
             Wish.Refresh -> loadForecast()
+            else -> Observable.just(Effect.NoEffect)
         }
 
         private fun loadForecast(): Observable<Effect> {
@@ -49,16 +50,19 @@ class ForecastFeature(
                     Effect.DataLoaded(it.forecasts) as Effect
                 }
                 .startWith(Effect.Loading)
-                .onErrorReturn { Effect.Error }
+                .onErrorReturn { Effect.Error(it) }
         }
     }
 
     private class NewsPublisherImpl : NewsPublisher<Wish, Effect, State, News> {
         override fun invoke(wish: Wish, effect: Effect, state: State): News? {
-            return when (wish) {
-                is Wish.DayDetails -> News.Details
-                else -> null
+            when (wish) {
+                is Wish.DayDetails -> return News.PlaceWeatherDetails
             }
+            when (effect) {
+                is Effect.Error -> return News.ErrorMessage(effect.throwable)
+            }
+            return null
         }
     }
 
@@ -70,7 +74,8 @@ class ForecastFeature(
 
     sealed class Effect {
         object Loading : Effect()
-        object Error : Effect()
+        object NoEffect : Effect()
+        data class Error(val throwable: Throwable) : Effect()
         data class DataLoaded(val data: List<ForecastDomainModel>) : Effect()
     }
 
@@ -80,7 +85,8 @@ class ForecastFeature(
     )
 
     sealed class News {
-        object Details : News()
+        object PlaceWeatherDetails : News()
+        data class ErrorMessage(val throwable: Throwable) : News()
     }
 
     private class BootstrapperImpl : Bootstrapper<Wish> {
