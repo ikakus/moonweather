@@ -12,13 +12,15 @@ class UiModelTransformer(val context: Context) : (ForecastFeature.State) -> UiMo
                         text = it.day.text,
                         phenomenon = it.day.phenomenon,
                         min = it.day.tempmin.toString(),
-                        max = it.day.tempmax.toString()
+                        max = it.day.tempmax.toString(),
+                        peipsi = it.day.peipsi.orEmpty()
                     ),
                     night = ForecastUiModel(
                         text = it.night.text,
                         phenomenon = it.night.phenomenon,
                         min = it.day.tempmin.toString(),
-                        max = it.day.tempmax.toString()
+                        max = it.day.tempmax.toString(),
+                        peipsi = it.day.peipsi.orEmpty()
                     )
                 )
             }
@@ -49,5 +51,6 @@ data class ForecastUiModel(
     val min: String,
     val max: String,
     val phenomenon: String,
+    val peipsi: String,
     val text: String
 )

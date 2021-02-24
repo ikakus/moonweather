@@ -12,5 +12,17 @@
         <!-- Status bar color. -->
         <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
         <!-- Customize your theme here. -->
+
+        <item name="android:textViewStyle">@style/RobotoRegularTextViewStyle</item>
+
+    </style>
+
+
+    <style name="RobotoRegularTextViewStyle" parent="android:Widget.TextView">
+        <item name="android:fontFamily">@raw/roboto_regular</item>
+    </style>
+
+    <style name="RobotoMediumTextViewStyle" parent="android:Widget.TextView">
+        <item name="android:fontFamily">@raw/roboto_medium</item>
     </style>
 </resources>
