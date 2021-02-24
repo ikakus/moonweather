@@ -34,11 +34,12 @@ class ForecastFeature(
     private class ActorImpl(private val getForecastUseCase: GetForecastUseCase) :
         Actor<State, Wish, Effect> {
         override fun invoke(state: State, wish: Wish): Observable<Effect> = when (wish) {
-            Wish.DayDetails -> details(state)
-            Wish.LoadData -> details(state)
+            Wish.DayDetails -> TODO()
+            Wish.LoadData -> loadForecast()
+            Wish.Refresh -> TODO()
         }
 
-        private fun details(state: State): Observable<Effect> {
+        private fun loadForecast(): Observable<Effect> {
             return getForecastUseCase()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -62,6 +63,7 @@ class ForecastFeature(
 
     sealed class Wish {
         object LoadData : Wish()
+        object Refresh : Wish()
         object DayDetails : Wish()
     }
 
