@@ -41,8 +41,8 @@ class ForecastModule {
     }
 
     @Provides
-    fun provideConnectivityProvider(): ConnectivityProvider {
-        return ConnectivityProviderImpl()
+    fun provideConnectivityProvider(context: Context): ConnectivityProvider {
+        return ConnectivityProviderImpl(context)
     }
 
 
