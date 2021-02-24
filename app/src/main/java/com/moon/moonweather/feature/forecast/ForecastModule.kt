@@ -1,11 +1,10 @@
 package com.moon.moonweather.feature.forecast
 
+import android.content.Context
 import com.moon.data.ConnectivityProvider
 import com.moon.data.ConnectivityProviderImpl
 import com.moon.data.ForecastApi
-import com.moon.data.forecast.datasource.ForecastRepositoryImpl
-import com.moon.data.forecast.datasource.LocalForecastDataProvider
-import com.moon.data.forecast.datasource.RemoteForecastDataProvider
+import com.moon.data.forecast.datasource.*
 import com.moon.domain.forecast.ForecastRepository
 import com.moon.domain.forecast.usecase.GetForecastUseCase
 import com.moon.moonweather.core.di.Screen
@@ -48,8 +47,20 @@ class ForecastModule {
 
 
     @Provides
-    fun provideLocalForecastProvider(): LocalForecastDataProvider {
-        return LocalForecastDataProvider()
+    fun provideMockedForecastProvider(): MockedForecastDataProvider {
+        return MockedForecastDataProvider()
+    }
+
+    @Provides
+    fun provideLocalForecastProvider(
+        sharedPrefsForecastCache: SharedPrefsForecastCache
+    ): LocalForecastDataProvider {
+        return LocalForecastDataProvider(sharedPrefsForecastCache)
+    }
+
+    @Provides
+    fun provideSharedPrefsForecastCache(context: Context): SharedPrefsForecastCache {
+        return SharedPrefsForecastCache(context)
     }
 
     @Provides

@@ -1,5 +1,6 @@
 package com.moon.moonweather.componentprovider.main
 
+import android.content.Context
 import com.moon.moonweather.componentprovider.app.AppComponent
 import com.moon.moonweather.core.di.Feature
 import com.moon.moonweather.feature.main.MainActivity
@@ -16,5 +17,6 @@ import ru.terrakok.cicerone.Router
 @Feature
 interface MainComponent {
     fun router(): Router
+    fun context(): Context
     fun inject(mainActivity: MainActivity)
 }
