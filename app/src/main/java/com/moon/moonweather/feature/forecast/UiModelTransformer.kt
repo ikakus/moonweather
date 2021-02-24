@@ -18,9 +18,9 @@ class UiModelTransformer(val context: Context) : (ForecastFeature.State) -> UiMo
                     night = ForecastUiModel(
                         text = it.night.text,
                         phenomenon = it.night.phenomenon,
-                        min = it.day.tempmin.toString(),
-                        max = it.day.tempmax.toString(),
-                        peipsi = it.day.peipsi.orEmpty()
+                        min = it.night.tempmin.toString(),
+                        max = it.night.tempmax.toString(),
+                        peipsi = it.night.peipsi.orEmpty()
                     )
                 )
             }
