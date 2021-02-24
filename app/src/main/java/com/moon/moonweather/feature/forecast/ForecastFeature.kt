@@ -37,7 +37,7 @@ class ForecastFeature(
         override fun invoke(state: State, wish: Wish): Observable<Effect> = when (wish) {
             Wish.DayDetails -> TODO()
             Wish.LoadData -> loadForecast()
-            Wish.Refresh -> TODO()
+            Wish.Refresh -> loadForecast()
         }
 
         private fun loadForecast(): Observable<Effect> {

@@ -2,6 +2,7 @@ package com.moon.moonweather.feature.forecast
 
 import android.os.Bundle
 import android.view.View
+import android.widget.TextView
 import com.moon.moonweather.R
 import com.moon.moonweather.componentprovider.forecast.ForecastComponentProvider
 import com.moon.moonweather.core.base.BaseFragment
@@ -24,6 +25,11 @@ class ForecastFragment : BaseFragment<UiEvent, UiModel>(R.layout.fragment_foreca
         uiModel.forecastDays?.first()?.let {
             day_info_view_day.setData(it.day)
             day_info_view_night.setData(it.night)
+            it.places?.forEach { location ->
+                val textView = TextView(requireContext())
+                textView.text = location.name
+                ll_places.addView(textView)
+            }
         }
         loading(uiModel.loading)
     }

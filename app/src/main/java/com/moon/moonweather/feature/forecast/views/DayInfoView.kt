@@ -24,5 +24,6 @@ class DayInfoView @JvmOverloads constructor(
         tv_min_temp.text = "Min: ${it.min}"
         tv_phenomenon.text = it.phenomenon
         tv_peipsi.text = it.peipsi
+        iv_forecast_icon.setImageResource(it.drawableResource)
     }
 }

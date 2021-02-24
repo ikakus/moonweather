@@ -1,6 +1,7 @@
 package com.moon.moonweather.feature.forecast
 
 import android.content.Context
+import com.moon.moonweather.R
 
 class UiModelTransformer(val context: Context) : (ForecastFeature.State) -> UiModel {
     override fun invoke(state: ForecastFeature.State): UiModel {
@@ -13,20 +14,46 @@ class UiModelTransformer(val context: Context) : (ForecastFeature.State) -> UiMo
                         phenomenon = it.day.phenomenon,
                         min = it.day.tempmin.toString(),
                         max = it.day.tempmax.toString(),
-                        peipsi = it.day.peipsi.orEmpty()
+                        peipsi = it.day.peipsi.orEmpty(),
+                        drawableResource = phenomenonDayToDrawable(it.day.phenomenon)
                     ),
                     night = ForecastUiModel(
                         text = it.night.text,
                         phenomenon = it.night.phenomenon,
                         min = it.night.tempmin.toString(),
                         max = it.night.tempmax.toString(),
-                        peipsi = it.night.peipsi.orEmpty()
-                    )
+                        peipsi = it.night.peipsi.orEmpty(),
+                        drawableResource = phenomenonNightToDrawable(it.night.phenomenon)
+                    ),
+                    places = it.day.places?.map { place ->
+                        MinorLocation(place.name)
+                    }
                 )
             }
         )
     }
+
+    private fun phenomenonDayToDrawable(phenomenon: String): Int {
+
+        if (phenomenon.contains("shower", true) ||
+            phenomenon.contains("rain", true)
+        ) {
+            return R.drawable.day_rain
+        }
+        return R.drawable.day_clear
+    }
+
+    private fun phenomenonNightToDrawable(phenomenon: String): Int {
+
+        if (phenomenon.contains("shower", true) ||
+            phenomenon.contains("rain", true)
+        ) {
+            return R.drawable.night_full_moon_rain
+        }
+        return R.drawable.night_full_moon_clear
+    }
 }
+
 
 sealed class UiEvent {
     data class DayClicked(val text: String) : UiEvent()
@@ -48,6 +75,7 @@ data class MinorLocation(
 )
 
 data class ForecastUiModel(
+    val drawableResource: Int,
     val min: String,
     val max: String,
     val phenomenon: String,
