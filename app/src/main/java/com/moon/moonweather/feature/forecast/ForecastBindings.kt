@@ -45,20 +45,3 @@ class NewsListener(
     }
 }
 
-private class UiModelTransformer(val context: Context) : (ForecastFeature.State) -> UiModel {
-    override fun invoke(state: ForecastFeature.State): UiModel {
-        return UiModel(
-            loading = state.loading,
-            text = state.text
-        )
-    }
-}
-
-sealed class UiEvent {
-    data class DayClicked(val text: String) : UiEvent()
-}
-
-data class UiModel(
-    val loading: Boolean,
-    val text: String
-)

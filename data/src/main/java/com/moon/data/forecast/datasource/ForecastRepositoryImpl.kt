@@ -4,7 +4,6 @@ import com.moon.data.ConnectivityProvider
 import com.moon.domain.forecast.ForecastRepository
 import com.moon.domain.forecast.model.ForecastListDomainModel
 import io.reactivex.Single
-import java.util.concurrent.TimeUnit
 
 class ForecastRepositoryImpl(
     private val connectivityProvider: ConnectivityProvider,
@@ -14,7 +13,7 @@ class ForecastRepositoryImpl(
     override fun get4DaysForecast(): Single<ForecastListDomainModel> {
         return if (connectivityProvider.isInternetAvailable()) {
             remoteForecastDataProvider.get4DaysForecast()
-                .delay(5, TimeUnit.SECONDS)
+//                .delay(5, TimeUnit.SECONDS)
                 .map { model ->
                     localForecastDataProvider.put(model)
                     model

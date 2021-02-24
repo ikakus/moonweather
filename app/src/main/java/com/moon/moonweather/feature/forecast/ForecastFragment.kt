@@ -21,7 +21,7 @@ class ForecastFragment : BaseFragment<UiEvent, UiModel>(R.layout.fragment_foreca
     }
 
     override fun accept(t: UiModel) {
-        forecast_text.text = t.text
+        forecast_text.text = t.forecastDays?.first()?.day?.text
         loading(t.loading)
     }
 }

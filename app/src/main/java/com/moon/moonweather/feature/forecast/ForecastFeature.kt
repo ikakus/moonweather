@@ -5,6 +5,7 @@ import com.badoo.mvicore.element.Bootstrapper
 import com.badoo.mvicore.element.NewsPublisher
 import com.badoo.mvicore.element.Reducer
 import com.badoo.mvicore.feature.ActorReducerFeature
+import com.moon.domain.forecast.model.ForecastDomainModel
 import com.moon.domain.forecast.usecase.GetForecastUseCase
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -25,7 +26,7 @@ class ForecastFeature(
         override fun invoke(state: State, effect: Effect): State {
             return when (effect) {
                 Effect.Loading -> state.copy(loading = true)
-                is Effect.DataLoaded -> state.copy(text = effect.data, loading = false)
+                is Effect.DataLoaded -> state.copy(forecastData = effect.data, loading = false)
                 Effect.Error -> TODO()
             }
         }
@@ -45,7 +46,7 @@ class ForecastFeature(
                 .observeOn(AndroidSchedulers.mainThread())
                 .toObservable()
                 .map {
-                    Effect.DataLoaded(it.toString()) as Effect
+                    Effect.DataLoaded(it.forecasts) as Effect
                 }
                 .startWith(Effect.Loading)
                 .onErrorReturn { Effect.Error }
@@ -70,12 +71,12 @@ class ForecastFeature(
     sealed class Effect {
         object Loading : Effect()
         object Error : Effect()
-        data class DataLoaded(val data: String) : Effect()
+        data class DataLoaded(val data: List<ForecastDomainModel>) : Effect()
     }
 
     data class State(
         val loading: Boolean = false,
-        val text: String = "initial"
+        val forecastData: List<ForecastDomainModel>? = null
     )
 
     sealed class News {
