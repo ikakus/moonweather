@@ -57,7 +57,7 @@ class ForecastFeature(
     private class NewsPublisherImpl : NewsPublisher<Wish, Effect, State, News> {
         override fun invoke(wish: Wish, effect: Effect, state: State): News? {
             when (wish) {
-                is Wish.DayDetails -> return News.PlaceWeatherDetails
+                is Wish.PlaceDetails -> return News.PlaceWeatherDetails
             }
             when (effect) {
                 is Effect.Error -> return News.ErrorMessage(effect.throwable)
@@ -69,7 +69,7 @@ class ForecastFeature(
     sealed class Wish {
         object LoadData : Wish()
         object Refresh : Wish()
-        object DayDetails : Wish()
+        object PlaceDetails : Wish()
     }
 
     sealed class Effect {

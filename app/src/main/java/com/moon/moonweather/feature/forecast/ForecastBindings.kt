@@ -24,7 +24,7 @@ class UiEventTransformer : (UiEvent) -> ForecastFeature.Wish? {
     override fun invoke(event: UiEvent): ForecastFeature.Wish? = when (event) {
 
         is UiEvent.DayClicked -> {
-            ForecastFeature.Wish.DayDetails
+            ForecastFeature.Wish.PlaceDetails
         }
     }
 }

@@ -1,6 +1,8 @@
 package com.moon.moonweather.feature.forecast
 
 import android.content.Context
+import com.moon.data.forecast.model.PlaceEntity
+import com.moon.domain.forecast.model.ForecastDomainModel
 import com.moon.moonweather.R
 
 class UiModelTransformer(val context: Context) : (ForecastFeature.State) -> UiModel {
@@ -25,12 +27,42 @@ class UiModelTransformer(val context: Context) : (ForecastFeature.State) -> UiMo
                         peipsi = it.night.peipsi.orEmpty(),
                         drawableResource = phenomenonNightToDrawable(it.night.phenomenon)
                     ),
-                    places = it.day.places?.map { place ->
-                        MinorLocation(place.name)
-                    }
+                    places = getPlaces(it)
                 )
             }
         )
+    }
+
+    private fun getPlaces(forecastDomainModel: ForecastDomainModel): List<ShortLocationUiModel>? {
+        val locations = mutableListOf<ShortLocationUiModel>()
+        val dayPlaces = forecastDomainModel.day.places
+        val nightPlaces = forecastDomainModel.night.places
+
+        val combined = dayPlaces?.zip(nightPlaces!!) { a, b ->
+            PlaceEntity(
+                name = a.name,
+                phenomenon = a.phenomenon,
+                tempmax = a.tempmax ?: b.tempmax,
+                tempmin = a.tempmin ?: b.tempmin
+            )
+        }
+
+        combined?.forEach { place ->
+            locations.add(
+                ShortLocationUiModel(
+                    name = place.name,
+                    max = place.tempmax.toString(),
+                    min = place.tempmin.toString()
+                )
+            )
+
+        }
+
+        return if (locations.isEmpty()) {
+            null
+        } else {
+            locations
+        }
     }
 
     private fun phenomenonDayToDrawable(phenomenon: String): Int {
@@ -78,11 +110,13 @@ data class UiModel(
 data class ForecastDayUiModel(
     val day: ForecastUiModel,
     val night: ForecastUiModel,
-    val places: List<MinorLocation>? = null
+    val places: List<ShortLocationUiModel>? = null
 )
 
-data class MinorLocation(
-    val name: String
+data class ShortLocationUiModel(
+    val name: String,
+    val min: String,
+    val max: String
 )
 
 data class ForecastUiModel(
