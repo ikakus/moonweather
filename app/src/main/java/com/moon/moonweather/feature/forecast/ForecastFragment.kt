@@ -25,16 +25,23 @@ class ForecastFragment : BaseFragment<UiEvent, UiModel>(R.layout.fragment_foreca
     }
 
     override fun accept(uiModel: UiModel) {
-        uiModel.forecastDays?.let {
-            pager.adapter = ForecastInfoAdapter(it)
-            tab_layout.setupWithViewPager(pager)
+        if (uiModel.updateUi) {
+            uiModel.forecastDays?.let {
+                pager.adapter = ForecastInfoAdapter(it) { placeName ->
+                    uiEvent(UiEvent.LocationClicked(placeName))
+                }
+                tab_layout.setupWithViewPager(pager)
+            }
         }
 
         loading(uiModel.loading)
     }
 }
 
-class ForecastInfoAdapter(private val forecastDays: List<ForecastDayUiModel>) : PagerAdapter() {
+class ForecastInfoAdapter(
+    private val forecastDays: List<ForecastDayUiModel>,
+    private val clickListener: ((String) -> Unit?)
+) : PagerAdapter() {
     override fun getCount(): Int {
         return forecastDays.size
     }
@@ -46,6 +53,7 @@ class ForecastInfoAdapter(private val forecastDays: List<ForecastDayUiModel>) : 
     override fun instantiateItem(container: ViewGroup, position: Int): Any {
         val view = ForecastInfoView(container.context).apply {
             setData(forecastDays[position])
+            this.placeClickListener = clickListener
         }
         container.addView(view)
         return view

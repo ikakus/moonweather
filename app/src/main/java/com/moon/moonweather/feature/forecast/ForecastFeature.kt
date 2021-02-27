@@ -33,7 +33,7 @@ class ForecastFeature(
                 Effect.Loading -> state.copy(loading = true)
                 is Effect.DataLoaded -> state.copy(forecastData = effect.data, loading = false)
                 is Effect.Error -> state.copy(loading = false)
-                else -> state
+                else -> state.copy(updateUI = false)
             }
         }
     }
@@ -62,7 +62,7 @@ class ForecastFeature(
     private class NewsPublisherImpl : NewsPublisher<Wish, Effect, State, News> {
         override fun invoke(wish: Wish, effect: Effect, state: State): News? {
             when (wish) {
-                is Wish.PlaceDetails -> return News.PlaceWeatherDetails
+                is Wish.PlaceDetails -> return News.PlaceWeatherDetails(wish.name)
             }
             when (effect) {
                 is Effect.Error -> return News.ErrorMessage(effect.throwable)
@@ -74,7 +74,7 @@ class ForecastFeature(
     sealed class Wish {
         object LoadData : Wish()
         object Refresh : Wish()
-        object PlaceDetails : Wish()
+        data class PlaceDetails(val name: String) : Wish()
     }
 
     sealed class Effect {
@@ -86,11 +86,12 @@ class ForecastFeature(
 
     data class State(
         val loading: Boolean = false,
+        val updateUI: Boolean = true,
         val forecastData: List<ForecastDomainModel>? = null
     )
 
     sealed class News {
-        object PlaceWeatherDetails : News()
+        data class PlaceWeatherDetails(val name: String) : News()
         data class ErrorMessage(val throwable: Throwable) : News()
     }
 

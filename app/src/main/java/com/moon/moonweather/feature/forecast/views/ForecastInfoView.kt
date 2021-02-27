@@ -18,6 +18,8 @@ class ForecastInfoView @JvmOverloads constructor(
         View.inflate(context, R.layout.view_forecast, this)
     }
 
+    var placeClickListener: ((String) -> Unit?)? = null
+
     fun setData(it: ForecastDayUiModel) {
         day_info_view_day.setData(it.day)
         day_info_view_night.setData(it.night)
@@ -32,7 +34,11 @@ class ForecastInfoView @JvmOverloads constructor(
 
         it.places?.forEach { location ->
             ll_places.addView(PlaceInfoView(context).apply {
+                tag = location.name
                 setData(location)
+                setOnClickListener {
+                    placeClickListener?.invoke(location.name)
+                }
             })
         }
     }
