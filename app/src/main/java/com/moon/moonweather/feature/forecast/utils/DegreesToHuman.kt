@@ -1,8 +1,8 @@
 package com.moon.moonweather.feature.forecast.utils
 
-class DegreesToWords {
+class DegreesToHuman {
 
-    fun getHumanString(input: String): String {
+    fun getString(input: String): String {
         var formattedInput = input
         val prefix = if (input[0] == '-') {
             formattedInput = input.replace("-", "")
@@ -11,12 +11,24 @@ class DegreesToWords {
             ""
         }
 
+
         val result = when {
             formattedInput.length == 1 -> getSimpleWord(formattedInput)
             formattedInput.first() == '1' -> getTensUnderTwentyWords(formattedInput)
             else -> getComplexTensWords(formattedInput)
         }
         return (prefix + result).capitalize()
+    }
+
+    fun getStringWithPostfix(input: String): String {
+        return getString(input) + " " + getDegreePostfix(input)
+    }
+
+    private fun getDegreePostfix(formattedInput: String): String {
+        return when {
+            formattedInput.last() == '1' -> "degree"
+            else -> "degrees"
+        }
     }
 
 

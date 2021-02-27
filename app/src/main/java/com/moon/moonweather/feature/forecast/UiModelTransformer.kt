@@ -3,10 +3,12 @@ package com.moon.moonweather.feature.forecast
 import android.content.Context
 import com.moon.domain.forecast.model.ForecastDomainModel
 import com.moon.moonweather.feature.forecast.utils.DateToString
-import com.moon.moonweather.feature.forecast.utils.DegreesToWords
+import com.moon.moonweather.feature.forecast.utils.DegreesToHuman
 import com.moon.moonweather.feature.forecast.utils.PhenomenonToDrawable
 import com.moon.moonweather.feature.forecast.utils.PlacesZipper
 import java.util.*
+
+const val degreeSymbol = "°"
 
 class UiModelTransformer(val context: Context) : (ForecastFeature.State) -> UiModel {
     override fun invoke(state: ForecastFeature.State): UiModel {
@@ -21,22 +23,23 @@ private fun ForecastDomainModel.mapToUi(): ForecastDayUiModel {
     val placesZipper = PlacesZipper(this)
     val phMapper = PhenomenonToDrawable()
     val dateFormatter = DateToString(Date())
-    val tempFormatter = DegreesToWords()
+    val tempFormatter = DegreesToHuman()
+
     return ForecastDayUiModel(
         dateTitle = dateFormatter.parseDate(date),
         day = ForecastUiModel(
             text = day.text,
             phenomenon = day.phenomenon,
-            min = tempFormatter.getHumanString(day.tempmin.toString()),
-            max = tempFormatter.getHumanString(day.tempmax.toString()),
+            min = tempFormatter.getStringWithPostfix(day.tempmin.toString()),
+            max = tempFormatter.getStringWithPostfix(day.tempmax.toString()),
             peipsi = day.peipsi.orEmpty(),
             drawableResource = phMapper.dayToDrawable(day.phenomenon)
         ),
         night = ForecastUiModel(
             text = night.text,
             phenomenon = night.phenomenon,
-            min = tempFormatter.getHumanString(night.tempmin.toString()),
-            max = tempFormatter.getHumanString(night.tempmax.toString()),
+            min = tempFormatter.getStringWithPostfix(night.tempmin.toString()),
+            max = tempFormatter.getStringWithPostfix(night.tempmax.toString()),
             peipsi = night.peipsi.orEmpty(),
             drawableResource = phMapper.nightToDrawable(night.phenomenon)
         ),

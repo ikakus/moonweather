@@ -7,65 +7,74 @@ import org.junit.Test
 
 class DegreesToWordsTest {
 
-    lateinit var degreesToWords: DegreesToWords
+    lateinit var degreesToWords: DegreesToHuman
 
     @Before
     fun setUp() {
-        degreesToWords = DegreesToWords()
+        degreesToWords = DegreesToHuman()
     }
 
     @Test
     fun `simple numbers conversion`() {
-        assertThat(degreesToWords.getHumanString("0"), equalTo("Zero"))
-        assertThat(degreesToWords.getHumanString("1"), equalTo("One"))
-        assertThat(degreesToWords.getHumanString("2"), equalTo("Two"))
-        assertThat(degreesToWords.getHumanString("3"), equalTo("Three"))
-        assertThat(degreesToWords.getHumanString("4"), equalTo("Four"))
-        assertThat(degreesToWords.getHumanString("5"), equalTo("Five"))
-        assertThat(degreesToWords.getHumanString("6"), equalTo("Six"))
-        assertThat(degreesToWords.getHumanString("7"), equalTo("Seven"))
-        assertThat(degreesToWords.getHumanString("8"), equalTo("Eight"))
-        assertThat(degreesToWords.getHumanString("9"), equalTo("Nine"))
+        assertThat(degreesToWords.getString("0"), equalTo("Zero"))
+        assertThat(degreesToWords.getString("1"), equalTo("One"))
+        assertThat(degreesToWords.getString("2"), equalTo("Two"))
+        assertThat(degreesToWords.getString("3"), equalTo("Three"))
+        assertThat(degreesToWords.getString("4"), equalTo("Four"))
+        assertThat(degreesToWords.getString("5"), equalTo("Five"))
+        assertThat(degreesToWords.getString("6"), equalTo("Six"))
+        assertThat(degreesToWords.getString("7"), equalTo("Seven"))
+        assertThat(degreesToWords.getString("8"), equalTo("Eight"))
+        assertThat(degreesToWords.getString("9"), equalTo("Nine"))
     }
 
     @Test
     fun `simple tens  under 20 numbers conversion`() {
-        assertThat(degreesToWords.getHumanString("10"), equalTo("Ten"))
-        assertThat(degreesToWords.getHumanString("11"), equalTo("Eleven"))
-        assertThat(degreesToWords.getHumanString("12"), equalTo("Twelve"))
-        assertThat(degreesToWords.getHumanString("13"), equalTo("Thirteen"))
-        assertThat(degreesToWords.getHumanString("14"), equalTo("Fourteen"))
-        assertThat(degreesToWords.getHumanString("15"), equalTo("Fifteen"))
-        assertThat(degreesToWords.getHumanString("16"), equalTo("Sixteen"))
-        assertThat(degreesToWords.getHumanString("17"), equalTo("Seventeen"))
-        assertThat(degreesToWords.getHumanString("18"), equalTo("Eighteen"))
-        assertThat(degreesToWords.getHumanString("19"), equalTo("Nineteen"))
+        assertThat(degreesToWords.getString("10"), equalTo("Ten"))
+        assertThat(degreesToWords.getString("11"), equalTo("Eleven"))
+        assertThat(degreesToWords.getString("12"), equalTo("Twelve"))
+        assertThat(degreesToWords.getString("13"), equalTo("Thirteen"))
+        assertThat(degreesToWords.getString("14"), equalTo("Fourteen"))
+        assertThat(degreesToWords.getString("15"), equalTo("Fifteen"))
+        assertThat(degreesToWords.getString("16"), equalTo("Sixteen"))
+        assertThat(degreesToWords.getString("17"), equalTo("Seventeen"))
+        assertThat(degreesToWords.getString("18"), equalTo("Eighteen"))
+        assertThat(degreesToWords.getString("19"), equalTo("Nineteen"))
     }
 
     @Test
     fun `simple tens numbers conversion`() {
-        assertThat(degreesToWords.getHumanString("20"), equalTo("Twenty"))
-        assertThat(degreesToWords.getHumanString("30"), equalTo("Thirty"))
-        assertThat(degreesToWords.getHumanString("40"), equalTo("Forty"))
-        assertThat(degreesToWords.getHumanString("50"), equalTo("Fifty"))
-        assertThat(degreesToWords.getHumanString("60"), equalTo("Sixty"))
-        assertThat(degreesToWords.getHumanString("70"), equalTo("Seventy"))
+        assertThat(degreesToWords.getString("20"), equalTo("Twenty"))
+        assertThat(degreesToWords.getString("30"), equalTo("Thirty"))
+        assertThat(degreesToWords.getString("40"), equalTo("Forty"))
+        assertThat(degreesToWords.getString("50"), equalTo("Fifty"))
+        assertThat(degreesToWords.getString("60"), equalTo("Sixty"))
+        assertThat(degreesToWords.getString("70"), equalTo("Seventy"))
     }
 
     @Test
     fun `tens numbers conversion`() {
-        assertThat(degreesToWords.getHumanString("21"), equalTo("Twenty one"))
-        assertThat(degreesToWords.getHumanString("32"), equalTo("Thirty two"))
-        assertThat(degreesToWords.getHumanString("43"), equalTo("Forty three"))
-        assertThat(degreesToWords.getHumanString("54"), equalTo("Fifty four"))
-        assertThat(degreesToWords.getHumanString("65"), equalTo("Sixty five"))
-        assertThat(degreesToWords.getHumanString("76"), equalTo("Seventy six"))
+        assertThat(degreesToWords.getString("21"), equalTo("Twenty one"))
+        assertThat(degreesToWords.getString("32"), equalTo("Thirty two"))
+        assertThat(degreesToWords.getString("43"), equalTo("Forty three"))
+        assertThat(degreesToWords.getString("54"), equalTo("Fifty four"))
+        assertThat(degreesToWords.getString("65"), equalTo("Sixty five"))
+        assertThat(degreesToWords.getString("76"), equalTo("Seventy six"))
     }
 
     @Test
     fun `add Minus word for negative temperatures`() {
-        assertThat(degreesToWords.getHumanString("-21"), equalTo("Minus twenty one"))
-        assertThat(degreesToWords.getHumanString("-32"), equalTo("Minus thirty two"))
-        assertThat(degreesToWords.getHumanString("-43"), equalTo("Minus forty three"))
+        assertThat(degreesToWords.getString("-21"), equalTo("Minus twenty one"))
+        assertThat(degreesToWords.getString("-32"), equalTo("Minus thirty two"))
+        assertThat(degreesToWords.getString("-43"), equalTo("Minus forty three"))
+    }
+
+    @Test
+    fun `add degree word postfix`() {
+        assertThat(degreesToWords.getStringWithPostfix("21"), equalTo("Twenty one degree"))
+        assertThat(degreesToWords.getStringWithPostfix("0"), equalTo("Zero degrees"))
+        assertThat(degreesToWords.getStringWithPostfix("1"), equalTo("One degree"))
+        assertThat(degreesToWords.getStringWithPostfix("2"), equalTo("Two degrees"))
+        assertThat(degreesToWords.getStringWithPostfix("22"), equalTo("Twenty two degrees"))
     }
 }

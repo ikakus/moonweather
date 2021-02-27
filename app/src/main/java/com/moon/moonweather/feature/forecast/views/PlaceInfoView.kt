@@ -18,8 +18,10 @@ class PlaceInfoView @JvmOverloads constructor(
         View.inflate(context, R.layout.place_info_view, this)
     }
 
+    val degreeSymbol = "°"
+
     fun setData(it: ShortLocationUiModel) {
         tv_location_name.text = it.name
-        tv_temp_range.text = "${it.min} - ${it.max}"
+        tv_temp_range.text = "${it.min}..${it.max} ${degreeSymbol}C"
     }
 }
