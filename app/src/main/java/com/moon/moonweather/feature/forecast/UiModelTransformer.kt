@@ -74,6 +74,6 @@ data class ForecastUiModel(
     val min: String,
     val max: String,
     val phenomenon: String,
-    val peipsi: String,
-    val text: String
+    val peipsi: String? = null,
+    val text: String? = null
 )
