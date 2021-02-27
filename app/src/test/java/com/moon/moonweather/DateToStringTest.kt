@@ -1,6 +1,6 @@
 package com.moon.moonweather
 
-import com.moon.moonweather.feature.forecast.DateToString
+import com.moon.moonweather.feature.forecast.utils.DateToString
 import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.MatcherAssert.assertThat
 import org.junit.Before
@@ -36,7 +36,6 @@ class DateToStringTest {
         val result = dateToString.parseDate("2021-02-25")
         assertThat(result, equalTo("Tomorrow"))
     }
-
 
     @Test
     fun `return Formatted date if current date is more than 2 days older`() {

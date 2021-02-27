@@ -1,4 +1,4 @@
-package com.moon.moonweather.feature.forecast
+package com.moon.moonweather.feature.forecast.utils
 
 import java.text.SimpleDateFormat
 import java.util.*
