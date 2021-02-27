@@ -2,15 +2,15 @@ package com.moon.moonweather.feature.forecast.utils
 
 import com.moon.data.forecast.model.PlaceEntity
 import com.moon.domain.forecast.model.ForecastDomainModel
-import com.moon.moonweather.feature.forecast.ShortLocationUiModel
+import com.moon.moonweather.feature.forecast.PlaceUiModel
 
 /**
  * Combine day and night data from response,
  * Day has only max and Night has only min values
  */
-class PlacesZipper(private val forecastDomainModel: ForecastDomainModel) {
-    fun getPlaces(): List<ShortLocationUiModel>? {
-        val locations = mutableListOf<ShortLocationUiModel>()
+class PlacesListZipper(private val forecastDomainModel: ForecastDomainModel) {
+    fun getPlaces(): List<PlaceUiModel>? {
+        val places = mutableListOf<PlaceUiModel>()
         val dayPlaces = forecastDomainModel.day.places
         val nightPlaces = forecastDomainModel.night.places
 
@@ -24,8 +24,8 @@ class PlacesZipper(private val forecastDomainModel: ForecastDomainModel) {
         }
 
         combined?.forEach { place ->
-            locations.add(
-                ShortLocationUiModel(
+            places.add(
+                PlaceUiModel(
                     name = place.name,
                     max = place.tempmax.toString(),
                     min = place.tempmin.toString()
@@ -34,10 +34,10 @@ class PlacesZipper(private val forecastDomainModel: ForecastDomainModel) {
 
         }
 
-        return if (locations.isEmpty()) {
+        return if (places.isEmpty()) {
             null
         } else {
-            locations
+            places
         }
     }
 }

@@ -5,7 +5,7 @@ import com.moon.domain.forecast.model.ForecastDomainModel
 import com.moon.moonweather.feature.forecast.utils.DateToString
 import com.moon.moonweather.feature.forecast.utils.DegreesToHuman
 import com.moon.moonweather.feature.forecast.utils.PhenomenonToDrawable
-import com.moon.moonweather.feature.forecast.utils.PlacesZipper
+import com.moon.moonweather.feature.forecast.utils.PlacesListZipper
 import java.util.*
 
 const val degreeSymbol = "°"
@@ -20,7 +20,7 @@ class UiModelTransformer(val context: Context) : (ForecastFeature.State) -> UiMo
 }
 
 private fun ForecastDomainModel.mapToUi(): ForecastDayUiModel {
-    val placesZipper = PlacesZipper(this)
+    val placesZipper = PlacesListZipper(this)
     val phMapper = PhenomenonToDrawable()
     val dateFormatter = DateToString(Date())
     val tempFormatter = DegreesToHuman()
@@ -48,7 +48,7 @@ private fun ForecastDomainModel.mapToUi(): ForecastDayUiModel {
 }
 
 sealed class UiEvent {
-    data class LocationClicked(val name: String) : UiEvent()
+    data class PlaceClicked(val name: String) : UiEvent()
 }
 
 data class UiModel(
@@ -60,10 +60,10 @@ data class ForecastDayUiModel(
     val dateTitle: String,
     val day: ForecastUiModel,
     val night: ForecastUiModel,
-    val places: List<ShortLocationUiModel>? = null
+    val places: List<PlaceUiModel>? = null
 )
 
-data class ShortLocationUiModel(
+data class PlaceUiModel(
     val name: String,
     val min: String,
     val max: String

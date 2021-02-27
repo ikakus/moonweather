@@ -32,12 +32,12 @@ class ForecastInfoView @JvmOverloads constructor(
             ll_places.visibility = VISIBLE
         }
 
-        it.places?.forEach { location ->
+        it.places?.forEach { place ->
             ll_places.addView(PlaceInfoView(context).apply {
-                tag = location.name
-                setData(location)
+                tag = place.name
+                setData(place)
                 setOnClickListener {
-                    placeClickListener?.invoke(location.name)
+                    placeClickListener?.invoke(place.name)
                 }
             })
         }

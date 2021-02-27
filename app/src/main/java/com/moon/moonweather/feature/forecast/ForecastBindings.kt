@@ -23,8 +23,8 @@ class ForecastBindings(
 class UiEventTransformer : (UiEvent) -> ForecastFeature.Wish? {
     override fun invoke(event: UiEvent): ForecastFeature.Wish? = when (event) {
 
-        is UiEvent.LocationClicked -> {
-            ForecastFeature.Wish.ShowLocationDetails(event.name)
+        is UiEvent.PlaceClicked -> {
+            ForecastFeature.Wish.ShowPlaceDetails(event.name)
         }
     }
 }
@@ -37,7 +37,7 @@ class NewsListener(
     override fun accept(news: ForecastFeature.News) {
         when (news) {
             is ForecastFeature.News.LoactionWeatherDetails ->
-                router.navigateTo(MainFlowScreens.LocationDetailsScreen())
+                router.navigateTo(MainFlowScreens.PlaceDetailsScreen(news.name))
 
             is ForecastFeature.News.ErrorMessage ->
                 errorHappened(news.throwable)

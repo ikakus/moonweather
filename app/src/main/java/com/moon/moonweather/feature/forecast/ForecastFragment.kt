@@ -19,7 +19,7 @@ class ForecastFragment : BaseFragment<UiEvent, UiModel>(R.layout.fragment_foreca
     lateinit var forecastBindings: ForecastBindings
 
     var adapter = ForecastInfoAdapter { placeName ->
-        uiEvent(UiEvent.LocationClicked(placeName))
+        uiEvent(UiEvent.PlaceClicked(placeName))
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

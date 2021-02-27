@@ -2,7 +2,7 @@ package com.moon.moonweather.navigation
 
 import androidx.fragment.app.Fragment
 import com.moon.moonweather.feature.forecast.ForecastFragment
-import com.moon.moonweather.feature.locationdetails.LocationDetailsFragment
+import com.moon.moonweather.feature.placedetails.PlaceDetailsFragment
 import ru.terrakok.cicerone.android.support.SupportAppScreen
 
 class MainFlowScreens {
@@ -13,9 +13,9 @@ class MainFlowScreens {
         }
     }
 
-    class LocationDetailsScreen : SupportAppScreen() {
+    class PlaceDetailsScreen(val name: String) : SupportAppScreen() {
         override fun getFragment(): Fragment {
-            return LocationDetailsFragment()
+            return PlaceDetailsFragment.newInstance(name)
         }
     }
 }
