@@ -18,7 +18,7 @@ class PlaceInfoView @JvmOverloads constructor(
         View.inflate(context, R.layout.place_info_view, this)
     }
 
-    val degreeSymbol = "°"
+    private val degreeSymbol = "°"
 
     fun setData(it: ShortLocationUiModel) {
         tv_location_name.text = it.name
