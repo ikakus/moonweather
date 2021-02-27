@@ -23,7 +23,7 @@ class UiEventTransformer : (UiEvent) -> ForecastFeature.Wish? {
     override fun invoke(event: UiEvent): ForecastFeature.Wish? = when (event) {
 
         is UiEvent.LocationClicked -> {
-            ForecastFeature.Wish.PlaceDetails(event.name)
+            ForecastFeature.Wish.ShowLocationDetails(event.name)
         }
     }
 }
@@ -35,7 +35,7 @@ class NewsListener(
 
     override fun accept(news: ForecastFeature.News) {
         when (news) {
-            is ForecastFeature.News.PlaceWeatherDetails -> {
+            is ForecastFeature.News.LoactionWeatherDetails -> {
                 Toast.makeText(context, news.name, Toast.LENGTH_SHORT).show()
             }
 //                router.newRootScreen(MainFlowScreens.HomeScreen())
