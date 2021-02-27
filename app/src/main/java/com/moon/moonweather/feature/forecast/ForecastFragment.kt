@@ -17,6 +17,11 @@ class ForecastFragment : BaseFragment<UiEvent, UiModel>(R.layout.fragment_foreca
 
     @Inject
     lateinit var forecastBindings: ForecastBindings
+
+    var adapter = ForecastInfoAdapter { placeName ->
+        uiEvent(UiEvent.LocationClicked(placeName))
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -24,10 +29,6 @@ class ForecastFragment : BaseFragment<UiEvent, UiModel>(R.layout.fragment_foreca
         forecastBindings.setup(this)
         pager.adapter = adapter
         tab_layout.setupWithViewPager(pager)
-    }
-
-    var adapter = ForecastInfoAdapter { placeName ->
-        uiEvent(UiEvent.LocationClicked(placeName))
     }
 
     override fun accept(uiModel: UiModel) {
