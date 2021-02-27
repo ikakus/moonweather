@@ -13,7 +13,6 @@ const val degreeSymbol = "°"
 class UiModelTransformer(val context: Context) : (ForecastFeature.State) -> UiModel {
     override fun invoke(state: ForecastFeature.State): UiModel {
         return UiModel(
-            updateUi = state.updateUI,
             loading = state.loading,
             forecastDays = state.forecastData?.map { it.mapToUi() }
         )
@@ -54,8 +53,7 @@ sealed class UiEvent {
 
 data class UiModel(
     val loading: Boolean,
-    val forecastDays: List<ForecastDayUiModel>?,
-    val updateUi: Boolean
+    val forecastDays: List<ForecastDayUiModel>?
 )
 
 data class ForecastDayUiModel(
