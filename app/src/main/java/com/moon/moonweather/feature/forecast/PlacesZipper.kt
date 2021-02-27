@@ -3,6 +3,10 @@ package com.moon.moonweather.feature.forecast
 import com.moon.data.forecast.model.PlaceEntity
 import com.moon.domain.forecast.model.ForecastDomainModel
 
+/**
+ * Combine day and night data from response,
+ * Day has only max and Night has only min values
+ */
 class PlacesZipper(private val forecastDomainModel: ForecastDomainModel) {
     fun getPlaces(): List<ShortLocationUiModel>? {
         val locations = mutableListOf<ShortLocationUiModel>()

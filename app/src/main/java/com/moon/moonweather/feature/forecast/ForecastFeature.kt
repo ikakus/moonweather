@@ -14,7 +14,12 @@ import io.reactivex.schedulers.Schedulers
 class ForecastFeature(
     getForecastUseCase: GetForecastUseCase
 ) :
-    ActorReducerFeature<ForecastFeature.Wish, ForecastFeature.Effect, ForecastFeature.State, ForecastFeature.News>(
+    ActorReducerFeature<
+            ForecastFeature.Wish,
+            ForecastFeature.Effect,
+            ForecastFeature.State,
+            ForecastFeature.News
+            >(
         initialState = State(loading = false),
         reducer = ReducerImpl(),
         actor = ActorImpl(getForecastUseCase),

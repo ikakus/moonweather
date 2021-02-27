@@ -32,7 +32,6 @@ class ForecastFragment : BaseFragment<UiEvent, UiModel>(R.layout.fragment_foreca
 
         loading(uiModel.loading)
     }
-
 }
 
 class ForecastInfoAdapter(private val forecastDays: List<ForecastDayUiModel>) : PagerAdapter() {
