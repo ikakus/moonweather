@@ -33,6 +33,8 @@ class ForecastFragment : BaseFragment<UiEvent, UiModel>(R.layout.fragment_foreca
 
     override fun accept(uiModel: UiModel) {
         uiModel.forecastDays?.let {
+
+            // Ideally ModelWatcher should be used
             if ((adapter.forecastDays == it).not()) {
                 adapter.forecastDays = it
                 adapter.notifyDataSetChanged()

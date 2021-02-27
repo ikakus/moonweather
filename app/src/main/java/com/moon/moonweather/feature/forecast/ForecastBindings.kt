@@ -4,6 +4,7 @@ import android.content.Context
 import android.widget.Toast
 import com.badoo.mvicore.binder.using
 import com.moon.moonweather.core.ResumePauseBindings
+import com.moon.moonweather.navigation.MainFlowScreens
 import io.reactivex.functions.Consumer
 import ru.terrakok.cicerone.Router
 
@@ -35,11 +36,11 @@ class NewsListener(
 
     override fun accept(news: ForecastFeature.News) {
         when (news) {
-            is ForecastFeature.News.LoactionWeatherDetails -> {
-                Toast.makeText(context, news.name, Toast.LENGTH_SHORT).show()
-            }
-//                router.newRootScreen(MainFlowScreens.HomeScreen())
-            is ForecastFeature.News.ErrorMessage -> errorHappened(news.throwable)
+            is ForecastFeature.News.LoactionWeatherDetails ->
+                router.navigateTo(MainFlowScreens.LocationDetailsScreen())
+
+            is ForecastFeature.News.ErrorMessage ->
+                errorHappened(news.throwable)
         }
     }
 
