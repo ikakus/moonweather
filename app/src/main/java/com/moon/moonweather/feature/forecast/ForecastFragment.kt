@@ -45,8 +45,9 @@ class ForecastInfoAdapter(private val forecastDays: List<ForecastDayUiModel>) : 
     }
 
     override fun instantiateItem(container: ViewGroup, position: Int): Any {
-        val view = ForecastInfoView(container.context)
-        view.setData(forecastDays[position])
+        val view = ForecastInfoView(container.context).apply {
+            setData(forecastDays[position])
+        }
         container.addView(view)
         return view
     }
