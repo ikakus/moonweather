@@ -52,7 +52,7 @@ class ForecastInfoAdapter(private val forecastDays: List<ForecastDayUiModel>) : 
     }
 
     override fun getPageTitle(position: Int): CharSequence {
-        return forecastDays[position].date
+        return forecastDays[position].dateTitle
     }
 
     override fun destroyItem(container: ViewGroup, position: Int, obj: Any) {

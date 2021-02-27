@@ -1,4 +1,4 @@
-package com.moon.moonweather.feature.forecast
+package com.moon.moonweather.feature.forecast.di
 
 import android.content.Context
 import com.moon.data.ConnectivityProvider
@@ -8,6 +8,8 @@ import com.moon.data.forecast.datasource.*
 import com.moon.domain.forecast.ForecastRepository
 import com.moon.domain.forecast.usecase.GetForecastUseCase
 import com.moon.moonweather.core.di.Screen
+import com.moon.moonweather.feature.forecast.ForecastBindings
+import com.moon.moonweather.feature.forecast.ForecastFeature
 import dagger.Module
 import dagger.Provides
 import ru.terrakok.cicerone.Router

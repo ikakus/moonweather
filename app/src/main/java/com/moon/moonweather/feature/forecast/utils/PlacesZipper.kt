@@ -1,7 +1,8 @@
-package com.moon.moonweather.feature.forecast
+package com.moon.moonweather.feature.forecast.utils
 
 import com.moon.data.forecast.model.PlaceEntity
 import com.moon.domain.forecast.model.ForecastDomainModel
+import com.moon.moonweather.feature.forecast.ShortLocationUiModel
 
 /**
  * Combine day and night data from response,

@@ -2,6 +2,9 @@ package com.moon.moonweather.feature.forecast
 
 import android.content.Context
 import com.moon.domain.forecast.model.ForecastDomainModel
+import com.moon.moonweather.feature.forecast.utils.PhenomenonToDrawable
+import com.moon.moonweather.feature.forecast.utils.PlacesZipper
+import java.util.*
 
 class UiModelTransformer(val context: Context) : (ForecastFeature.State) -> UiModel {
     override fun invoke(state: ForecastFeature.State): UiModel {
@@ -15,8 +18,9 @@ class UiModelTransformer(val context: Context) : (ForecastFeature.State) -> UiMo
 private fun ForecastDomainModel.mapToUi(): ForecastDayUiModel {
     val placesZipper = PlacesZipper(this)
     val phMapper = PhenomenonToDrawable()
+    val dateFormatter = DateToString(Date())
     return ForecastDayUiModel(
-        date = date,
+        dateTitle = dateFormatter.parseDate(date),
         day = ForecastUiModel(
             text = day.text,
             phenomenon = day.phenomenon,
@@ -47,7 +51,7 @@ data class UiModel(
 )
 
 data class ForecastDayUiModel(
-    val date: String,
+    val dateTitle: String,
     val day: ForecastUiModel,
     val night: ForecastUiModel,
     val places: List<ShortLocationUiModel>? = null
