@@ -11,6 +11,7 @@ class UiModelTransformer(val context: Context) : (ForecastFeature.State) -> UiMo
             loading = state.loading,
             forecastDays = state.forecastData?.map {
                 ForecastDayUiModel(
+                    date = it.date,
                     day = ForecastUiModel(
                         text = it.day.text,
                         phenomenon = it.day.phenomenon,
@@ -108,6 +109,7 @@ data class UiModel(
 )
 
 data class ForecastDayUiModel(
+    val date: String,
     val day: ForecastUiModel,
     val night: ForecastUiModel,
     val places: List<ShortLocationUiModel>? = null
