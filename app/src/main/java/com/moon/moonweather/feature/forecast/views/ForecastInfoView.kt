@@ -21,6 +21,15 @@ class ForecastInfoView @JvmOverloads constructor(
     fun setData(it: ForecastDayUiModel) {
         day_info_view_day.setData(it.day)
         day_info_view_night.setData(it.night)
+
+        if (it.places == null) {
+            rl_places_separator.visibility = GONE
+            ll_places.visibility = GONE
+        } else {
+            rl_places_separator.visibility = VISIBLE
+            ll_places.visibility = VISIBLE
+        }
+
         it.places?.forEach { location ->
             ll_places.addView(PlaceInfoView(context).apply {
                 setData(location)
