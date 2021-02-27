@@ -51,4 +51,21 @@ class DegreesToWordsTest {
         assertThat(degreesToWords.getHumanString("60"), equalTo("Sixty"))
         assertThat(degreesToWords.getHumanString("70"), equalTo("Seventy"))
     }
+
+    @Test
+    fun `tens numbers conversion`() {
+        assertThat(degreesToWords.getHumanString("21"), equalTo("Twenty one"))
+        assertThat(degreesToWords.getHumanString("32"), equalTo("Thirty two"))
+        assertThat(degreesToWords.getHumanString("43"), equalTo("Forty three"))
+        assertThat(degreesToWords.getHumanString("54"), equalTo("Fifty four"))
+        assertThat(degreesToWords.getHumanString("65"), equalTo("Sixty five"))
+        assertThat(degreesToWords.getHumanString("76"), equalTo("Seventy six"))
+    }
+
+    @Test
+    fun `add Minus word for negative temperatures`() {
+        assertThat(degreesToWords.getHumanString("-21"), equalTo("Minus twenty one"))
+        assertThat(degreesToWords.getHumanString("-32"), equalTo("Minus thirty two"))
+        assertThat(degreesToWords.getHumanString("-43"), equalTo("Minus forty three"))
+    }
 }

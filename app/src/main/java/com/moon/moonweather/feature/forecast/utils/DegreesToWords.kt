@@ -3,9 +3,20 @@ package com.moon.moonweather.feature.forecast.utils
 class DegreesToWords {
 
     fun getHumanString(input: String): String {
-        if (input.length == 1) return getSimpleWord(input).capitalize()
-        if (input.first() == '1') return getTensUnderTwentyWords(input).capitalize()
-        return getComplexTensWords(input).capitalize()
+        var formattedInput = input
+        val prefix = if (input[0] == '-') {
+            formattedInput = input.replace("-", "")
+            "minus "
+        } else {
+            ""
+        }
+
+        val result = when {
+            formattedInput.length == 1 -> getSimpleWord(formattedInput)
+            formattedInput.first() == '1' -> getTensUnderTwentyWords(formattedInput)
+            else -> getComplexTensWords(formattedInput)
+        }
+        return (prefix + result).capitalize()
     }
 
 
@@ -13,7 +24,7 @@ class DegreesToWords {
         val firstChar = input[0]
         val secondChar = input[1]
         if (secondChar == '0') return getTensWords(firstChar.toString())
-        return ""
+        return getTensWords(firstChar.toString()) + " " + getSimpleWord(secondChar.toString())
     }
 
     private fun getTensWords(firstDecimal: String): String {
