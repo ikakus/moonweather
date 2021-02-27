@@ -36,8 +36,8 @@ class NewsListener(
 
     override fun accept(news: ForecastFeature.News) {
         when (news) {
-            is ForecastFeature.News.LoactionWeatherDetails ->
-                router.navigateTo(MainFlowScreens.PlaceDetailsScreen(news.name))
+            is ForecastFeature.News.PlaceWeatherDetails ->
+                router.navigateTo(MainFlowScreens.PlaceDetailsScreen(news.day, news.night))
 
             is ForecastFeature.News.ErrorMessage ->
                 errorHappened(news.throwable)

@@ -6,6 +6,7 @@ import com.badoo.mvicore.element.NewsPublisher
 import com.badoo.mvicore.element.Reducer
 import com.badoo.mvicore.feature.ActorReducerFeature
 import com.moon.domain.forecast.model.ForecastDomainModel
+import com.moon.domain.forecast.model.PlaceDomainModel
 import com.moon.domain.forecast.usecase.GetForecastUseCase
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -33,7 +34,7 @@ class ForecastFeature(
                 Effect.Loading -> state.copy(loading = true)
                 is Effect.DataLoaded -> state.copy(forecastData = effect.data, loading = false)
                 is Effect.Error -> state.copy(loading = false)
-                else -> state.copy(updateUI = false)
+                else -> state
             }
         }
     }
@@ -62,7 +63,13 @@ class ForecastFeature(
     private class NewsPublisherImpl : NewsPublisher<Wish, Effect, State, News> {
         override fun invoke(wish: Wish, effect: Effect, state: State): News? {
             when (wish) {
-                is Wish.ShowPlaceDetails -> return News.LoactionWeatherDetails(wish.name)
+                is Wish.ShowPlaceDetails -> {
+                    state.forecastData?.get(0)?.let { forecast ->
+                        val day = forecast.day.places?.find { it.name == wish.name }
+                        val night = forecast.night.places?.find { it.name == wish.name }
+                        return News.PlaceWeatherDetails(day, night)
+                    }
+                }
             }
             when (effect) {
                 is Effect.Error -> return News.ErrorMessage(effect.throwable)
@@ -86,12 +93,15 @@ class ForecastFeature(
 
     data class State(
         val loading: Boolean = false,
-        val updateUI: Boolean = true,
         val forecastData: List<ForecastDomainModel>? = null
     )
 
     sealed class News {
-        data class LoactionWeatherDetails(val name: String) : News()
+        data class PlaceWeatherDetails(
+            val day: PlaceDomainModel?,
+            val night: PlaceDomainModel?
+        ) : News()
+
         data class ErrorMessage(val throwable: Throwable) : News()
     }
 
