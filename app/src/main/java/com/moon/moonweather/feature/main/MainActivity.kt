@@ -2,6 +2,7 @@ package com.moon.moonweather.feature.main
 
 import android.os.Bundle
 import android.view.View
+import android.view.animation.AnimationUtils
 import androidx.appcompat.app.AppCompatActivity
 import com.moon.moonweather.R
 import com.moon.moonweather.componentprovider.main.MainComponentProvider
@@ -13,6 +14,7 @@ import ru.terrakok.cicerone.NavigatorHolder
 import ru.terrakok.cicerone.Router
 import ru.terrakok.cicerone.android.support.SupportAppNavigator
 import javax.inject.Inject
+
 
 class MainActivity : AppCompatActivity(), GlobalLoading {
 
@@ -45,9 +47,14 @@ class MainActivity : AppCompatActivity(), GlobalLoading {
 
     override fun loading(show: Boolean) {
         if (show) {
+
             loading_verlay.visibility = View.VISIBLE
         } else {
             loading_verlay.visibility = View.GONE
+            loading_verlay.startAnimation(
+                AnimationUtils.loadAnimation(this, R.anim.fadeout)
+            )
+
         }
     }
 }
