@@ -7,6 +7,7 @@ import com.moon.data.ForecastApi
 import com.moon.data.forecast.datasource.*
 import com.moon.domain.forecast.ForecastRepository
 import com.moon.domain.forecast.usecase.GetForecastUseCase
+import com.moon.moonweather.core.SchedulerProvider
 import com.moon.moonweather.core.di.Screen
 import com.moon.moonweather.feature.forecast.ForecastBindings
 import com.moon.moonweather.feature.forecast.ForecastFeature
@@ -24,8 +25,11 @@ class ForecastModule {
 
     @Provides
     @Screen
-    fun provideForecastFeature(getForecastUseCase: GetForecastUseCase): ForecastFeature {
-        return ForecastFeature(getForecastUseCase)
+    fun provideForecastFeature(
+        schedulerProvider: SchedulerProvider,
+        getForecastUseCase: GetForecastUseCase
+    ): ForecastFeature {
+        return ForecastFeature(schedulerProvider, getForecastUseCase)
     }
 
     @Provides

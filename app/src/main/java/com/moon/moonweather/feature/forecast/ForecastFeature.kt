@@ -1,5 +1,6 @@
 package com.moon.moonweather.feature.forecast
 
+import android.util.Log
 import com.badoo.mvicore.element.Actor
 import com.badoo.mvicore.element.Bootstrapper
 import com.badoo.mvicore.element.NewsPublisher
@@ -8,25 +9,24 @@ import com.badoo.mvicore.feature.ActorReducerFeature
 import com.moon.domain.forecast.model.ForecastDomainModel
 import com.moon.domain.forecast.model.PlaceDomainModel
 import com.moon.domain.forecast.usecase.GetForecastUseCase
+import com.moon.moonweather.core.SchedulerProvider
 import io.reactivex.Observable
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.schedulers.Schedulers
 
 class ForecastFeature(
+    schedulerProvider: SchedulerProvider,
     getForecastUseCase: GetForecastUseCase
-) :
-    ActorReducerFeature<
-            ForecastFeature.Wish,
-            ForecastFeature.Effect,
-            ForecastFeature.State,
-            ForecastFeature.News
-            >(
-        initialState = State(loading = false),
-        reducer = ReducerImpl(),
-        actor = ActorImpl(getForecastUseCase),
-        newsPublisher = NewsPublisherImpl(),
-        bootstrapper = BootstrapperImpl()
-    ) {
+) : ActorReducerFeature<
+        ForecastFeature.Wish,
+        ForecastFeature.Effect,
+        ForecastFeature.State,
+        ForecastFeature.News
+        >(
+    initialState = State(loading = false),
+    reducer = ReducerImpl(),
+    actor = ActorImpl(schedulerProvider, getForecastUseCase),
+    newsPublisher = NewsPublisherImpl(),
+    bootstrapper = BootstrapperImpl()
+) {
 
     private class ReducerImpl : Reducer<State, Effect> {
         override fun invoke(state: State, effect: Effect): State {
@@ -39,7 +39,10 @@ class ForecastFeature(
         }
     }
 
-    private class ActorImpl(private val getForecastUseCase: GetForecastUseCase) :
+    private class ActorImpl(
+        private val schedulerProvider: SchedulerProvider,
+        private val getForecastUseCase: GetForecastUseCase
+    ) :
         Actor<State, Wish, Effect> {
         override fun invoke(state: State, wish: Wish): Observable<Effect> = when (wish) {
             Wish.LoadData -> loadForecast()
@@ -49,8 +52,11 @@ class ForecastFeature(
 
         private fun loadForecast(): Observable<Effect> {
             return getForecastUseCase()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribeOn(schedulerProvider.io())
+//                .observeOn(schedulerProvider.ui())
+                .doOnError {
+                    Log.e("getForecastUseCase", it.toString())
+                }
                 .toObservable()
                 .map {
                     Effect.DataLoaded(it.forecasts) as Effect
