@@ -52,12 +52,12 @@ class ForecastFeature(
 
         private fun loadForecast(): Observable<Effect> {
             return getForecastUseCase()
-//                .subscribeOn(schedulerProvider.io())
-//                .observeOn(schedulerProvider.ui())
-                .doOnError {
-                    Log.e("getForecastUseCase", it.toString())
-                }
+                .subscribeOn(schedulerProvider.io())
+                .observeOn(schedulerProvider.ui())
                 .toObservable()
+                .doOnError { error ->
+                    Log.e("getForecastUseCase", error.stackTraceToString())
+                }
                 .map {
                     Effect.DataLoaded(it.forecasts) as Effect
                 }

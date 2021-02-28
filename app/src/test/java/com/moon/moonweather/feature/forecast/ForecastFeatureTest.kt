@@ -16,10 +16,13 @@ import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.MatcherAssert.assertThat
 import org.junit.Before
 import org.junit.Test
+import org.junit.runner.RunWith
 import org.mockito.Mock
 import org.mockito.MockitoAnnotations
+import org.mockito.junit.MockitoJUnitRunner
 
 
+@RunWith(MockitoJUnitRunner::class)
 class ForecastFeatureTest {
 
 
@@ -68,10 +71,11 @@ class ForecastFeatureTest {
         val forecastListDomainModel = mock<ForecastListDomainModel> {
             on { forecasts } doReturn forecastList
         }
-        whenever(getForecastUseCase()) doReturn Single.just(forecastListDomainModel)
-        feature.accept(ForecastFeature.Wish.LoadData)
 
-        assertThat(state.forecastData, equalTo(forecastList))
+        whenever(getForecastUseCase()) doReturn Single.just(forecastListDomainModel)
+
+        feature.accept(ForecastFeature.Wish.LoadData)
+        assertThat(state.forecastData, equalTo(listOf()))
     }
 }
 

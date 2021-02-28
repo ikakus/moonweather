@@ -13,7 +13,6 @@ class ForecastRepositoryImpl(
     override fun get4DaysForecast(): Single<ForecastListDomainModel> {
         return if (connectivityProvider.isInternetAvailable()) {
             remoteForecastDataProvider.get4DaysForecast()
-//                .delay(5, TimeUnit.SECONDS)
                 .map { model ->
                     localForecastDataProvider.put(model)
                     model
