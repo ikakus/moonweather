@@ -29,11 +29,20 @@ ext {
     dagger_version = '2.28.3'
     // Navigation
     cicerone_version = '5.1.1'
-    //Testing
+    // Testing
     junit_version = '4.13.2'
-    hamcrest_version ='2.2'
+    hamcrest_version = '2.2'
     mockito_kotlin_version = '2.2.0'
-    mockito_inline = '2.13.0'
+    mockito_inline_version = '2.13.0'
+    // RxJava
+    rx_java_version = "2.2.19"
+    rx_android_version = "2.1.1"
+    // Moshi
+    moshi_version = "1.9.3"
+    // Retrofit
+    retrofit_version = "2.9.0"
+    // OkHttp
+    okhttp_version = "4.8.1"
 }
 
 allprojects {

@@ -6,11 +6,12 @@ import com.moon.data.MoshiParser
 import com.moon.data.base.Cache
 import com.moon.domain.forecast.model.ForecastListDomainModel
 
-class SharedPrefsForecastCache(private val context: Context) : Cache<ForecastListDomainModel> {
-    private val KEY_FORECAST = "key_forecast"
-    private val PREFS_FORECAST = "prefs_forecast"
+private const val KEY_FORECAST = "key_forecast"
+private const val PREFS_FORECAST = "prefs_forecast"
 
-    val parser = MoshiParser()
+class SharedPrefsForecastCache(private val context: Context) : Cache<ForecastListDomainModel> {
+
+    private val parser = MoshiParser()
 
     override fun put(data: ForecastListDomainModel) {
         val a = parser.parseTo(data)

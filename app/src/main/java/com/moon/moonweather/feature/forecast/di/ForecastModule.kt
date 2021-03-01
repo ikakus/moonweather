@@ -53,8 +53,8 @@ class ForecastModule {
 
 
     @Provides
-    fun provideMockedForecastProvider(): MockedForecastDataProvider {
-        return MockedForecastDataProvider()
+    fun provideMockedForecastProvider(): StubForecastDataProvider {
+        return StubForecastDataProvider()
     }
 
     @Provides

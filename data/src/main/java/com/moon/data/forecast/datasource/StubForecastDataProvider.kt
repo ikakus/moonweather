@@ -7,7 +7,7 @@ import com.moon.domain.forecast.ForecastRepository
 import com.moon.domain.forecast.model.ForecastListDomainModel
 import io.reactivex.Single
 
-class MockedForecastDataProvider : ForecastRepository {
+class StubForecastDataProvider : ForecastRepository {
     override fun get4DaysForecast(): Single<ForecastListDomainModel> {
         return Single.just(getMockedData())
     }
@@ -37,5 +37,5 @@ fun getMockedData(): ForecastListDomainModel {
             winds = null
         )
     )
-    return ForecastListEntity(forecasts = listOf(forecast)) as ForecastListDomainModel
+    return ForecastListEntity(forecasts = listOf(forecast))
 }

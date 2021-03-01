@@ -49,12 +49,12 @@ dependencies {
     implementation "ru.terrakok.cicerone:cicerone:$cicerone_version"
 
     kapt "com.google.dagger:dagger-compiler:$dagger_version"
-    api "com.google.dagger:dagger:$dagger_version"
+    implementation "com.google.dagger:dagger:$dagger_version"
 
     testImplementation "junit:junit:$junit_version"
     testImplementation "org.hamcrest:hamcrest:$hamcrest_version"
     testImplementation "com.nhaarman.mockitokotlin2:mockito-kotlin:$mockito_kotlin_version"
-    testImplementation "org.mockito:mockito-inline:$mockito_inline"
+    testImplementation "org.mockito:mockito-inline:$mockito_inline_version"
 
     implementation project(':domain')
     implementation project(':data')

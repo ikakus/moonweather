@@ -7,9 +7,6 @@ import io.reactivex.Single
 
 class RemoteForecastDataProvider(private val api: ForecastApi) : ForecastRepository {
     override fun get4DaysForecast(): Single<ForecastListDomainModel> {
-        return api.get4DaysForecast().map {
-            it as ForecastListDomainModel
-        }
+        return api.get4DaysForecast().map { it }
     }
-
 }
