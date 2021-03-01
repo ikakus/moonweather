@@ -28,7 +28,6 @@ import org.mockito.junit.MockitoJUnitRunner
 @RunWith(MockitoJUnitRunner::class)
 class ForecastFeatureTest {
 
-
     @Mock
     private lateinit var getForecastUseCase: GetForecastUseCase
 
