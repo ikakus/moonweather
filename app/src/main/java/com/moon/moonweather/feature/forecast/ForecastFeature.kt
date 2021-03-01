@@ -1,6 +1,5 @@
 package com.moon.moonweather.feature.forecast
 
-import android.util.Log
 import com.badoo.mvicore.element.Actor
 import com.badoo.mvicore.element.Bootstrapper
 import com.badoo.mvicore.element.NewsPublisher
@@ -41,7 +40,7 @@ class ForecastFeature(
 
     private class ActorImpl(
         private val schedulerProvider: SchedulerProvider,
-        private val getForecastUseCase: GetForecastUseCase
+        private val getForecastUseCase: GetForecastUseCase?
     ) :
         Actor<State, Wish, Effect> {
         override fun invoke(state: State, wish: Wish): Observable<Effect> = when (wish) {
@@ -51,18 +50,21 @@ class ForecastFeature(
         }
 
         private fun loadForecast(): Observable<Effect> {
-            return getForecastUseCase()
-                .subscribeOn(schedulerProvider.io())
-                .observeOn(schedulerProvider.ui())
-                .toObservable()
-                .doOnError { error ->
-                    Log.e("getForecastUseCase", error.stackTraceToString())
-                }
-                .map {
-                    Effect.DataLoaded(it.forecasts) as Effect
-                }
-                .startWith(Effect.Loading)
-                .onErrorReturn { Effect.Error(it) }
+            val useCase = getForecastUseCase?.invoke()
+            return if (useCase == null) {
+                Observable.just(Effect.NoEffect)
+            } else {
+                useCase
+                    .subscribeOn(schedulerProvider.io())
+                    .observeOn(schedulerProvider.ui())
+                    .toObservable()
+                    .map {
+                        Effect.DataLoaded(it.forecasts) as Effect
+                    }
+                    .startWith(Effect.Loading)
+                    .onErrorReturn { Effect.Error(it) }
+            }
+
         }
     }
 

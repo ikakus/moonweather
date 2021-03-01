@@ -65,17 +65,16 @@ class ForecastFeatureTest {
 
     @Test
     fun `emit forecast on LoadDataWish`() {
-        val state: ForecastFeature.State = states.onNextEvents().first()
         val forecastDomainModel = mock<ForecastDomainModel>()
         val forecastList = listOf(forecastDomainModel, forecastDomainModel)
         val forecastListDomainModel = mock<ForecastListDomainModel> {
             on { forecasts } doReturn forecastList
         }
-
         whenever(getForecastUseCase()) doReturn Single.just(forecastListDomainModel)
-
         feature.accept(ForecastFeature.Wish.LoadData)
-        assertThat(state.forecastData, equalTo(listOf()))
+
+        val state = states.onNextEvents().last()
+        assertThat(state.forecastData, equalTo(forecastList))
     }
 }
 
