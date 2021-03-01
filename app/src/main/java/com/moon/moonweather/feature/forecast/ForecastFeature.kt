@@ -40,31 +40,24 @@ class ForecastFeature(
 
     private class ActorImpl(
         private val schedulerProvider: SchedulerProvider,
-        private val getForecastUseCase: GetForecastUseCase?
+        private val getForecastUseCase: GetForecastUseCase
     ) :
         Actor<State, Wish, Effect> {
         override fun invoke(state: State, wish: Wish): Observable<Effect> = when (wish) {
             Wish.LoadData -> loadForecast()
-            Wish.Refresh -> loadForecast()
             else -> Observable.just(Effect.NoEffect)
         }
 
         private fun loadForecast(): Observable<Effect> {
-            val useCase = getForecastUseCase?.invoke()
-            return if (useCase == null) {
-                Observable.just(Effect.NoEffect)
-            } else {
-                useCase
-                    .subscribeOn(schedulerProvider.io())
-                    .observeOn(schedulerProvider.ui())
-                    .toObservable()
-                    .map {
-                        Effect.DataLoaded(it.forecasts) as Effect
-                    }
-                    .startWith(Effect.Loading)
-                    .onErrorReturn { Effect.Error(it) }
-            }
-
+            return getForecastUseCase()
+                .subscribeOn(schedulerProvider.io())
+                .observeOn(schedulerProvider.ui())
+                .toObservable()
+                .map {
+                    Effect.DataLoaded(it.forecasts) as Effect
+                }
+                .startWith(Effect.Loading)
+                .onErrorReturn { Effect.Error(it) }
         }
     }
 
@@ -88,7 +81,6 @@ class ForecastFeature(
 
     sealed class Wish {
         object LoadData : Wish()
-        object Refresh : Wish()
         data class ShowPlaceDetails(val name: String) : Wish()
     }
 
