@@ -1,4 +1,4 @@
-package com.moon.moonweather.core.di
+package com.moon.moonweather.common.di
 
 import com.moon.moonweather.core.SchedulerProvideImpl
 import com.moon.moonweather.core.SchedulerProvider

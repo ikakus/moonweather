@@ -1,4 +1,4 @@
-package com.moon.moonweather.core.base
+package com.moon.moonweather.common.base
 
 import androidx.annotation.LayoutRes
 import androidx.fragment.app.Fragment

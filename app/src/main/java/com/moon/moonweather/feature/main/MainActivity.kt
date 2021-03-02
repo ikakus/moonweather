@@ -5,9 +5,9 @@ import android.view.View
 import android.view.animation.AnimationUtils
 import androidx.appcompat.app.AppCompatActivity
 import com.moon.moonweather.R
+import com.moon.moonweather.common.views.GlobalLoading
 import com.moon.moonweather.componentprovider.main.MainComponentProvider
 import com.moon.moonweather.navigation.MainFlowScreens
-import com.moon.moonweather.views.GlobalLoading
 import kotlinx.android.synthetic.main.activity_main.*
 import ru.terrakok.cicerone.Navigator
 import ru.terrakok.cicerone.NavigatorHolder

@@ -1,4 +1,4 @@
-package com.moon.moonweather.views
+package com.moon.moonweather.common.views
 
 interface GlobalLoading {
     fun loading(show: Boolean)

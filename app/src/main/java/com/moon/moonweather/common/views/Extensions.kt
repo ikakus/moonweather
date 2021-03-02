@@ -1,4 +1,4 @@
-package com.moon.moonweather.views
+package com.moon.moonweather.common.views
 
 import androidx.fragment.app.Fragment
 

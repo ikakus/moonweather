@@ -8,7 +8,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
-    <com.moon.moonweather.views.LoadingOverlay
+    <com.moon.moonweather.common.views.LoadingOverlay
         android:id="@+id/loading_verlay"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

@@ -5,10 +5,10 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.viewpager.widget.PagerAdapter
 import com.moon.moonweather.R
+import com.moon.moonweather.common.base.BaseFragment
+import com.moon.moonweather.common.views.loading
 import com.moon.moonweather.componentprovider.forecast.ForecastComponentProvider
-import com.moon.moonweather.core.base.BaseFragment
 import com.moon.moonweather.feature.forecast.views.ForecastInfoView
-import com.moon.moonweather.views.loading
 import kotlinx.android.synthetic.main.fragment_forecast.*
 import javax.inject.Inject
 

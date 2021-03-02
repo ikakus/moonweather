@@ -1,4 +1,4 @@
-package com.moon.moonweather.views
+package com.moon.moonweather.common.views
 
 import android.content.Context
 import android.util.AttributeSet
