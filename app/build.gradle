@@ -46,6 +46,8 @@ dependencies {
     implementation "com.github.badoo.mvicore:mvicore-android:$mvi_core_version"
     implementation "com.github.badoo.mvicore:mvicore-diff:$mvi_core_version"
 
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutines_version"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutines_version"
     implementation "ru.terrakok.cicerone:cicerone:$cicerone_version"
 
     kapt "com.google.dagger:dagger-compiler:$dagger_version"
