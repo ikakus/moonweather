@@ -34,7 +34,7 @@ open class BaseFlowFeature<Wish, Action, Effect, State, News>(
     initialState: State,
     bootstrapper: Bootstrapper<Action>? = null,
     private val wishToAction: WishToAction<Wish, Action>,
-    private val actor: Actor<State, Action, Effect>,
+    actor: Actor<State, Action, Effect>,
     reducer: Reducer<State, Effect>,
     postprocessor: PostProcessor<Action, Effect, State>? = null,
     newsPublisher: NewsPublisher<Action, Effect, State, News>? = null,
@@ -44,7 +44,8 @@ open class BaseFlowFeature<Wish, Action, Effect, State, News>(
     private val actionSubject = ConflatedBroadcastChannel<Action>()
     private val newsSubject = BroadcastChannel<News>(1)
 
-    private val actorWrapper = ActorWrapper(actor, reducer, stateSubject)
+    private val reducerWrapper = ReducerWrapper<State, Action, Effect>(reducer, stateSubject)
+    private val actorWrapper = ActorWrapper(actor, reducerWrapper)
 
     init {
         GlobalScope.launch {
@@ -74,16 +75,26 @@ open class BaseFlowFeature<Wish, Action, Effect, State, News>(
 
     class ActorWrapper<State, Action, Effect>(
         private val actor: Actor<State, Action, Effect>,
-        private val reducer: Reducer<State, Effect>,
-        private val stateSubject: MutableStateFlow<State>,
+        private val reducerWrapper: ReducerWrapper<State, Action, Effect>
     ) : FlowCollector<Pair<State, Action>> {
 
         override suspend fun emit(value: Pair<State, Action>) {
             val (state, action) = value
             actor(state, action).collect {
-                val st = reducer.invoke(state, it)
-                stateSubject.emit(st)
+                reducerWrapper.emit(Triple(state, action, it))
             }
+        }
+
+    }
+
+    class ReducerWrapper<State, Action, Effect>(
+        private val reducer: Reducer<State, Effect>,
+        private val stateSubject: MutableStateFlow<State>,
+    ) : FlowCollector<Triple<State, Action, Effect>> {
+        override suspend fun emit(value: Triple<State, Action, Effect>) {
+            val (state, action, effect) = value
+            val st = reducer.invoke(state, effect)
+            stateSubject.emit(st)
         }
 
     }
