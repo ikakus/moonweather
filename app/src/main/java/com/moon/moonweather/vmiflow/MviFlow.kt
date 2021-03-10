@@ -1,8 +1,8 @@
 package com.moon.moonweather.vmiflow
 
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.InternalCoroutinesApi
+import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.BroadcastChannel
+import kotlinx.coroutines.channels.ConflatedBroadcastChannel
 import kotlinx.coroutines.flow.*
 
 
@@ -28,7 +28,9 @@ typealias PostProcessor<Action, Effect, State> =
 typealias NewsPublisher<Action, Effect, State, News> =
             (action: Action, effect: Effect, state: State) -> News?
 
-open class BaseFeature<Wish, Action, Effect, State, News>(
+@FlowPreview
+@ExperimentalCoroutinesApi
+open class BaseFlowFeature<Wish, Action, Effect, State, News>(
     initialState: State,
     bootstrapper: Bootstrapper<Action>? = null,
     private val wishToAction: WishToAction<Wish, Action>,
@@ -39,15 +41,18 @@ open class BaseFeature<Wish, Action, Effect, State, News>(
 ) : Feature<Wish, State, News> {
 
     private val stateSubject = MutableStateFlow(initialState)
-    private val actionSubject = BroadcastChannel<Action>(1)
+    private val actionSubject = ConflatedBroadcastChannel<Action>()
     private val newsSubject = BroadcastChannel<News>(1)
 
     private val actorWrapper = ActorWrapper(actor, reducer)
 
     init {
-        actionSubject.asFlow().map {
-            actorWrapper.emit(Pair(state, it))
+        GlobalScope.launch {
+            actionSubject.asFlow().collect {
+                actorWrapper.emit(Pair(state, it))
+            }
         }
+
     }
 
     override val state: State
@@ -75,10 +80,9 @@ open class BaseFeature<Wish, Action, Effect, State, News>(
         ) : FlowCollector<Pair<State, Action>> {
         override suspend fun emit(value: Pair<State, Action>) {
             val (state, action) = value
-            actor(state, action)
-                .map {
-                    reducer.invoke(state, it)
-                }
+            actor(state, action).collect {
+                reducer.invoke(state, it)
+            }
         }
 
     }
