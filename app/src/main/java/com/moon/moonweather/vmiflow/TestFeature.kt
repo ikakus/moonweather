@@ -41,7 +41,9 @@ class TestFeature : BaseFlowFeature<
     class ReducerImpl : Reducer<State, Effect> {
         override fun invoke(state: State, effect: Effect): State {
             return when (effect) {
-                Effect.Loading -> state.copy(loading = true)
+                Effect.Loading -> {
+                    state.copy(loading = state.loading.not())
+                }
                 Effect.NoEffect -> state.copy(loading = false)
             }
         }

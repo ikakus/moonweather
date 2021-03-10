@@ -44,7 +44,7 @@ open class BaseFlowFeature<Wish, Action, Effect, State, News>(
     private val actionSubject = ConflatedBroadcastChannel<Action>()
     private val newsSubject = BroadcastChannel<News>(1)
 
-    private val actorWrapper = ActorWrapper(actor, reducer)
+    private val actorWrapper = ActorWrapper(actor, reducer, stateSubject)
 
     init {
         GlobalScope.launch {
@@ -52,7 +52,6 @@ open class BaseFlowFeature<Wish, Action, Effect, State, News>(
                 actorWrapper.emit(Pair(state, it))
             }
         }
-
     }
 
     override val state: State
@@ -76,12 +75,14 @@ open class BaseFlowFeature<Wish, Action, Effect, State, News>(
     class ActorWrapper<State, Action, Effect>(
         private val actor: Actor<State, Action, Effect>,
         private val reducer: Reducer<State, Effect>,
+        private val stateSubject: MutableStateFlow<State>,
+    ) : FlowCollector<Pair<State, Action>> {
 
-        ) : FlowCollector<Pair<State, Action>> {
         override suspend fun emit(value: Pair<State, Action>) {
             val (state, action) = value
             actor(state, action).collect {
-                reducer.invoke(state, it)
+                val st = reducer.invoke(state, it)
+                stateSubject.emit(st)
             }
         }
 

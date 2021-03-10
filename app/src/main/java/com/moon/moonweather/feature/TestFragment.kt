@@ -19,16 +19,10 @@ class TestFragment : Fragment(R.layout.fragment_test) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         test_button.setOnClickListener {
-
             lifecycleScope.launch {
                 feature.emit(TestFeature.Wish.Load)
             }
         }
-
-    }
-
-    override fun onResume() {
-        super.onResume()
 
         lifecycleScope.launch {
             feature.collect {
