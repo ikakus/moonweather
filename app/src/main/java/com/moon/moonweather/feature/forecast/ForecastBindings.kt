@@ -2,7 +2,6 @@ package com.moon.moonweather.feature.forecast
 
 import android.content.Context
 import android.widget.Toast
-import com.badoo.mvicore.binder.using
 import com.moon.moonweather.core.ResumePauseBindings
 import com.moon.moonweather.navigation.MainFlowScreens
 import io.reactivex.functions.Consumer
@@ -14,9 +13,9 @@ class ForecastBindings(
 ) : ResumePauseBindings<ForecastFragment>() {
     override fun setup(view: ForecastFragment) {
         super.setup(view)
-        binder?.bind(feature to view using UiModelTransformer(view.requireContext()))
-        binder?.bind(view to feature using UiEventTransformer())
-        binder?.bind(feature.news to NewsListener(view.context!!, router))
+//        binder?.bind(feature to view using UiModelTransformer(view.requireContext()))
+//        binder?.bind(view to feature using UiEventTransformer())
+//        binder?.bind(feature.news to NewsListener(view.context!!, router))
     }
 }
 

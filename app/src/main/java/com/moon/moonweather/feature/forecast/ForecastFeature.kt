@@ -1,20 +1,17 @@
 package com.moon.moonweather.feature.forecast
 
-import com.badoo.mvicore.element.Actor
-import com.badoo.mvicore.element.Bootstrapper
-import com.badoo.mvicore.element.NewsPublisher
-import com.badoo.mvicore.element.Reducer
-import com.badoo.mvicore.feature.ActorReducerFeature
 import com.moon.domain.forecast.model.ForecastDomainModel
 import com.moon.domain.forecast.model.PlaceDomainModel
 import com.moon.domain.forecast.usecase.GetForecastUseCase
 import com.moon.moonweather.core.SchedulerProvider
-import io.reactivex.Observable
+import com.moon.moonweather.vmiflow.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 
 class ForecastFeature(
     schedulerProvider: SchedulerProvider,
     getForecastUseCase: GetForecastUseCase
-) : ActorReducerFeature<
+) : ActorReducerFlowFeature<
         ForecastFeature.Wish,
         ForecastFeature.Effect,
         ForecastFeature.State,
@@ -43,21 +40,22 @@ class ForecastFeature(
         private val getForecastUseCase: GetForecastUseCase
     ) :
         Actor<State, Wish, Effect> {
-        override fun invoke(state: State, wish: Wish): Observable<Effect> = when (wish) {
+        override fun invoke(state: State, wish: Wish): Flow<Effect> = when (wish) {
             Wish.LoadData -> loadForecast()
-            else -> Observable.just(Effect.NoEffect)
+            else -> flow { emit(Effect.NoEffect) }
         }
 
-        private fun loadForecast(): Observable<Effect> {
-            return getForecastUseCase()
-                .subscribeOn(schedulerProvider.io())
-                .observeOn(schedulerProvider.ui())
-                .toObservable()
-                .map {
-                    Effect.DataLoaded(it.forecasts) as Effect
-                }
-                .startWith(Effect.Loading)
-                .onErrorReturn { Effect.Error(it) }
+        private fun loadForecast(): Flow<Effect> {
+//            return getForecastUseCase()
+//                .subscribeOn(schedulerProvider.io())
+//                .observeOn(schedulerProvider.ui())
+//                .toObservable()
+//                .map {
+//                    Effect.DataLoaded(it.forecasts) as Effect
+//                }
+//                .startWith(Effect.Loading)
+//                .onErrorReturn { Effect.Error(it) }
+            return flow { emit(Effect.NoEffect) }
         }
     }
 
@@ -106,8 +104,8 @@ class ForecastFeature(
     }
 
     private class BootstrapperImpl : Bootstrapper<Wish> {
-        override fun invoke(): Observable<Wish> {
-            return Observable.just(Wish.LoadData)
+        override fun invoke(): Flow<Wish> {
+            return flow { emit(Wish.LoadData) }
         }
     }
 }

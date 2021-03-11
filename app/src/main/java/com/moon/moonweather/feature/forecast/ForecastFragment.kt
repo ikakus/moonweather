@@ -10,16 +10,29 @@ import com.moon.moonweather.common.views.loading
 import com.moon.moonweather.componentprovider.forecast.ForecastComponentProvider
 import com.moon.moonweather.feature.forecast.views.ForecastInfoView
 import kotlinx.android.synthetic.main.fragment_forecast.*
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 
+@FlowPreview
+@ExperimentalCoroutinesApi
 class ForecastFragment : BaseFragment<UiEvent, UiModel>(R.layout.fragment_forecast) {
 
     @Inject
     lateinit var forecastBindings: ForecastBindings
 
     var adapter = ForecastInfoAdapter { placeName ->
-        uiEvent(UiEvent.PlaceClicked(placeName))
+
+        sendEvent(placeName)
+    }
+
+    private fun sendEvent(placeName: String) {
+        GlobalScope.launch {
+            uiEvents.send(UiEvent.PlaceClicked(placeName))
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -31,7 +44,8 @@ class ForecastFragment : BaseFragment<UiEvent, UiModel>(R.layout.fragment_foreca
         tab_layout.setupWithViewPager(pager)
     }
 
-    override fun accept(uiModel: UiModel) {
+
+    override suspend fun emit(uiModel: UiModel) {
         uiModel.forecastDays?.let {
 
             // Ideally ModelWatcher should be used
