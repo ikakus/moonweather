@@ -91,8 +91,8 @@ open class BaseFlowFeature<Wish, Action, Effect, State, News>(
     class ReducerWrapper<State, Action, Effect>(
         private val reducer: Reducer<State, Effect>,
         private val stateSubject: MutableStateFlow<State>,
-        private val postProcessorWrapper: PostProcessorWrapper<Action, Effect, State>,
-        private val newsPublisherWrapper: NewPublisherWrapper<Action, Effect, State, News>,
+        private val postProcessorWrapper: FlowCollector<Triple<Action, Effect, State>>,
+        private val newsPublisherWrapper: FlowCollector<Triple<Action, Effect, State>>,
     ) : FlowCollector<Triple<State, Action, Effect>> {
 
         override suspend fun emit(value: Triple<State, Action, Effect>) {
