@@ -140,3 +140,18 @@ open class BaseFlowFeature<Wish, Action, Effect, State, News>(
 
     }
 }
+
+open class ActorReducerFlowFeature<Wish, Effect, State, News>(
+    initialState: State,
+    bootstrapper: Bootstrapper<Wish>? = null,
+    actor: Actor<State, Wish, Effect>,
+    reducer: Reducer<State, Effect>,
+    newsPublisher: NewsPublisher<Wish, Effect, State, News>? = null
+) : BaseFlowFeature<Wish, Wish, Effect, State, News>(
+    initialState = initialState,
+    bootstrapper = bootstrapper,
+    wishToAction = { wish -> wish },
+    actor = actor,
+    reducer = reducer,
+    newsPublisher = newsPublisher
+)
