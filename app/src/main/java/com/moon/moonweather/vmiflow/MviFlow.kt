@@ -55,6 +55,13 @@ open class BaseFlowFeature<Wish, Action, Effect, State, News>(
                 actorWrapper.emit(Pair(state, action))
             }
         }
+        GlobalScope.launch {
+            actionSubject.let { output ->
+                bootstrapper?.invoke()?.collect {
+                    output.send(it)
+                }
+            }
+        }
     }
 
     override val state: State
