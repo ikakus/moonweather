@@ -43,8 +43,10 @@ open class BaseFlowFeature<Wish, Action, Effect, State, News>(
     private val actionSubject = BroadcastChannel<Action>(1)
     private val newsSubject = BroadcastChannel<News>(1)
 
+    private val newsPublisherWrapper = NewPublisherWrapper(newsPublisher, newsSubject)
     private val postProcessorWrapper = PostProcessorWrapper(postprocessor, actionSubject)
-    private val reducerWrapper = ReducerWrapper(reducer, stateSubject, postProcessorWrapper)
+    private val reducerWrapper =
+        ReducerWrapper(reducer, stateSubject, postProcessorWrapper, newsPublisherWrapper)
     private val actorWrapper = ActorWrapper(actor, reducerWrapper)
 
     init {
@@ -89,7 +91,8 @@ open class BaseFlowFeature<Wish, Action, Effect, State, News>(
     class ReducerWrapper<State, Action, Effect>(
         private val reducer: Reducer<State, Effect>,
         private val stateSubject: MutableStateFlow<State>,
-        private val postProcessorWrapper: PostProcessorWrapper<Action, Effect, State>
+        private val postProcessorWrapper: PostProcessorWrapper<Action, Effect, State>,
+        private val newsPublisherWrapper: NewPublisherWrapper<Action, Effect, State, News>,
     ) : FlowCollector<Triple<State, Action, Effect>> {
 
         override suspend fun emit(value: Triple<State, Action, Effect>) {
@@ -97,7 +100,7 @@ open class BaseFlowFeature<Wish, Action, Effect, State, News>(
             val st = reducer.invoke(state, effect)
             stateSubject.emit(st)
             postProcessorWrapper.emit(Triple(action, effect, state))
-
+            newsPublisherWrapper.emit(Triple(action, effect, state))
         }
     }
 
@@ -113,5 +116,20 @@ open class BaseFlowFeature<Wish, Action, Effect, State, News>(
                 }
             }
         }
+    }
+
+    class NewPublisherWrapper<Action, Effect, State, News>(
+        private val newsPublisher: NewsPublisher<Action, Effect, State, News>?,
+        private val newsSubject: BroadcastChannel<News>
+    ) : FlowCollector<Triple<Action, Effect, State>> {
+        override suspend fun emit(value: Triple<Action, Effect, State>) {
+            val (action, effect, state) = value
+            newsPublisher?.invoke(action, effect, state).let {
+                it?.let {
+                    newsSubject.send(it)
+                }
+            }
+        }
+
     }
 }
