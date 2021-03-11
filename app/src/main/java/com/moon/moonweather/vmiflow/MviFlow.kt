@@ -155,3 +155,31 @@ open class ActorReducerFlowFeature<Wish, Effect, State, News>(
     reducer = reducer,
     newsPublisher = newsPublisher
 )
+
+open class ReducerFlowFeature<Wish, State, News>(
+    initialState: State,
+    bootstrapper: Bootstrapper<Wish>? = null,
+    reducer: Reducer<State, Wish>,
+    newsPublisher: SimpleNewsPublisher<Wish, State, News>? = null
+) : BaseFlowFeature<Wish, Wish, Wish, State, News>(
+    initialState = initialState,
+    bootstrapper = bootstrapper,
+    wishToAction = { wish -> wish },
+    actor = BypassActor(),
+    reducer = reducer,
+    newsPublisher = newsPublisher
+) {
+    class BypassActor<State, Wish> : Actor<State, Wish, Wish> {
+        override fun invoke(state: State, wish: Wish): Flow<Wish> {
+            return flow { emit(wish) }
+        }
+
+    }
+
+    abstract class SimpleNewsPublisher<Wish, State, News> : NewsPublisher<Wish, Wish, State, News> {
+        override fun invoke(wish: Wish, effect: Wish, state: State): News? =
+            invoke(wish, state)
+
+        abstract fun invoke(wish: Wish, state: State): News?
+    }
+}
