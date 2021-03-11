@@ -2,7 +2,6 @@ package com.moon.moonweather.vmiflow
 
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.BroadcastChannel
-import kotlinx.coroutines.channels.ConflatedBroadcastChannel
 import kotlinx.coroutines.flow.*
 
 
@@ -41,16 +40,17 @@ open class BaseFlowFeature<Wish, Action, Effect, State, News>(
 ) : Feature<Wish, State, News> {
 
     private val stateSubject = MutableStateFlow(initialState)
-    private val actionSubject = ConflatedBroadcastChannel<Action>()
+    private val actionSubject = BroadcastChannel<Action>(1)
     private val newsSubject = BroadcastChannel<News>(1)
 
-    private val reducerWrapper = ReducerWrapper<State, Action, Effect>(reducer, stateSubject)
+    private val postProcessorWrapper = PostProcessorWrapper(postprocessor, actionSubject)
+    private val reducerWrapper = ReducerWrapper(reducer, stateSubject, postProcessorWrapper)
     private val actorWrapper = ActorWrapper(actor, reducerWrapper)
 
     init {
         GlobalScope.launch {
-            actionSubject.asFlow().collect {
-                actorWrapper.emit(Pair(state, it))
+            actionSubject.asFlow().collect { action ->
+                actorWrapper.emit(Pair(state, action))
             }
         }
     }
@@ -80,22 +80,38 @@ open class BaseFlowFeature<Wish, Action, Effect, State, News>(
 
         override suspend fun emit(value: Pair<State, Action>) {
             val (state, action) = value
-            actor(state, action).collect {
-                reducerWrapper.emit(Triple(state, action, it))
+            actor(state, action).collect { effect ->
+                reducerWrapper.emit(Triple(state, action, effect))
             }
         }
-
     }
 
     class ReducerWrapper<State, Action, Effect>(
         private val reducer: Reducer<State, Effect>,
         private val stateSubject: MutableStateFlow<State>,
+        private val postProcessorWrapper: PostProcessorWrapper<Action, Effect, State>
     ) : FlowCollector<Triple<State, Action, Effect>> {
+
         override suspend fun emit(value: Triple<State, Action, Effect>) {
             val (state, action, effect) = value
             val st = reducer.invoke(state, effect)
             stateSubject.emit(st)
-        }
+            postProcessorWrapper.emit(Triple(action, effect, state))
 
+        }
+    }
+
+    class PostProcessorWrapper<Action, Effect, State>(
+        private val postprocessor: PostProcessor<Action, Effect, State>?,
+        private val actionSubject: BroadcastChannel<Action>
+    ) : FlowCollector<Triple<Action, Effect, State>> {
+        override suspend fun emit(value: Triple<Action, Effect, State>) {
+            val (action, effect, state) = value
+            postprocessor?.invoke(action, effect, state).let {
+                it?.let {
+                    actionSubject.send(it)
+                }
+            }
+        }
     }
 }
