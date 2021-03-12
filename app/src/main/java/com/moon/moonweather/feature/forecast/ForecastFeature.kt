@@ -17,7 +17,7 @@ class ForecastFeature(
         ForecastFeature.State,
         ForecastFeature.News
         >(
-    initialState = State(loading = false),
+    initialState = State(loading = true),
     reducer = ReducerImpl(),
     actor = ActorImpl(schedulerProvider, getForecastUseCase),
     newsPublisher = NewsPublisherImpl(),

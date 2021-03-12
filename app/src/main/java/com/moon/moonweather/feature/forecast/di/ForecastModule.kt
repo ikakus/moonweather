@@ -9,18 +9,20 @@ import com.moon.domain.forecast.ForecastRepository
 import com.moon.domain.forecast.usecase.GetForecastUseCase
 import com.moon.moonweather.core.SchedulerProvider
 import com.moon.moonweather.core.di.Screen
-import com.moon.moonweather.feature.forecast.ForecastBindings
 import com.moon.moonweather.feature.forecast.ForecastFeature
+import com.moon.moonweather.feature.forecast.TestBinder
 import dagger.Module
 import dagger.Provides
+import kotlinx.coroutines.InternalCoroutinesApi
 import ru.terrakok.cicerone.Router
 
 @Module
 class ForecastModule {
+    @InternalCoroutinesApi
     @Provides
     @Screen
-    fun bindings(router: Router, feature: ForecastFeature): ForecastBindings {
-        return ForecastBindings(router, feature)
+    fun bindings(router: Router, feature: ForecastFeature): TestBinder {
+        return TestBinder(feature)
     }
 
     @Provides

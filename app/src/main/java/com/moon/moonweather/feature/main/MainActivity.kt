@@ -32,7 +32,7 @@ class MainActivity : AppCompatActivity(), GlobalLoading {
         MainComponentProvider.get().inject(this)
 
         navigator = SupportAppNavigator(this, R.id.main_container)
-        router.newRootScreen(MainFlowScreens.TestScreen())
+        router.newRootScreen(MainFlowScreens.ForecastScreen())
     }
 
     override fun onResume() {

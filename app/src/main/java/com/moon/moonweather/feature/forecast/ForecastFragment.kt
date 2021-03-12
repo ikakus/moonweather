@@ -10,19 +10,17 @@ import com.moon.moonweather.common.views.loading
 import com.moon.moonweather.componentprovider.forecast.ForecastComponentProvider
 import com.moon.moonweather.feature.forecast.views.ForecastInfoView
 import kotlinx.android.synthetic.main.fragment_forecast.*
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import javax.inject.Inject
 
 
+@InternalCoroutinesApi
 @FlowPreview
 @ExperimentalCoroutinesApi
 class ForecastFragment : BaseFragment<UiEvent, UiModel>(R.layout.fragment_forecast) {
 
     @Inject
-    lateinit var forecastBindings: ForecastBindings
+    lateinit var forecastBindings: TestBinder
 
     var adapter = ForecastInfoAdapter { placeName ->
 
@@ -39,7 +37,7 @@ class ForecastFragment : BaseFragment<UiEvent, UiModel>(R.layout.fragment_foreca
         super.onViewCreated(view, savedInstanceState)
 
         ForecastComponentProvider.get().inject(this)
-        forecastBindings.setup(this)
+        forecastBindings.setup(this, GlobalScope)
         pager.adapter = adapter
         tab_layout.setupWithViewPager(pager)
     }
