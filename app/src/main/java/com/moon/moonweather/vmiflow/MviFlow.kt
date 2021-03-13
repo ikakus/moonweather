@@ -2,6 +2,7 @@ package com.moon.moonweather.vmiflow
 
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.BroadcastChannel
+import kotlinx.coroutines.channels.ConflatedBroadcastChannel
 import kotlinx.coroutines.flow.*
 
 
@@ -41,7 +42,7 @@ open class BaseFlowFeature<Wish, Action, Effect, State, News>(
 
     private val stateSubject = MutableStateFlow(initialState)
     private val actionSubject = BroadcastChannel<Action>(1)
-    private val newsSubject = BroadcastChannel<News>(1)
+    private val newsSubject = ConflatedBroadcastChannel<News>()
 
     private val newsPublisherWrapper = NewPublisherWrapper(newsPublisher, newsSubject)
     private val postProcessorWrapper = PostProcessorWrapper(postprocessor, actionSubject)

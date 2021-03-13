@@ -21,7 +21,7 @@ class ForecastModule {
     @Provides
     @Screen
     fun bindings(router: Router, feature: ForecastFeature): ForecastBindings {
-        return ForecastBindings(feature)
+        return ForecastBindings(router, feature)
     }
 
     @Provides

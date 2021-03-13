@@ -2,26 +2,28 @@ package com.moon.moonweather.feature.forecast
 
 import android.content.Context
 import android.widget.Toast
+import androidx.lifecycle.lifecycleScope
+import com.moon.moonweather.navigation.MainFlowScreens
 import com.moon.moonweather.vmiflow.Bindings
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.coroutines.flow.FlowCollector
+import ru.terrakok.cicerone.Router
 
 @FlowPreview
 @InternalCoroutinesApi
 class ForecastBindings(
+    private val router: Router,
     private val feature: ForecastFeature,
 ) : Bindings<ForecastFragment>() {
 
-    override fun setup(view: ForecastFragment, coroutineScope: CoroutineScope) {
-        this.coroutineScope = coroutineScope
+    override fun setup(view: ForecastFragment) {
+        this.coroutineScope = view.lifecycleScope
         bind(feature to view using UiModelTransformer(view.requireContext()))
         bind(view to feature using UiEventTransformer())
-        bind(feature.news to NewsListener(view.context!!) using { it })
+        bind(feature.news to NewsListener(view.context!!, router) using { it })
     }
 }
-
 
 class UiEventTransformer : (UiEvent) -> ForecastFeature.Wish? {
     override fun invoke(event: UiEvent): ForecastFeature.Wish? = when (event) {
@@ -34,13 +36,13 @@ class UiEventTransformer : (UiEvent) -> ForecastFeature.Wish? {
 
 class NewsListener(
     private val context: Context,
+    private val router: Router,
 ) : FlowCollector<ForecastFeature.News> {
 
     override suspend fun emit(news: ForecastFeature.News) {
         when (news) {
-            is ForecastFeature.News.PlaceWeatherDetails -> {
-            }
-//                router.navigateTo(MainFlowScreens.PlaceDetailsScreen(news.day, news.night))
+            is ForecastFeature.News.PlaceWeatherDetails ->
+                router.navigateTo(MainFlowScreens.PlaceDetailsScreen(news.day, news.night))
 
             is ForecastFeature.News.ErrorMessage ->
                 errorHappened(news.throwable)

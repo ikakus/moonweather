@@ -13,7 +13,7 @@ typealias Connection<In, Out> = Triple<Flow<Out>, FlowCollector<In>, (Out) -> In
 @InternalCoroutinesApi
 abstract class Bindings<U>() {
     protected lateinit var coroutineScope: CoroutineScope
-    abstract fun setup(uiComponent: U, coroutineScope: CoroutineScope)
+    abstract fun setup(uiComponent: U)
 
     protected fun <Out : Any, In : Any> bind(connection: Connection<In, Out>) {
         val (flow, collector, transformer) = connection
