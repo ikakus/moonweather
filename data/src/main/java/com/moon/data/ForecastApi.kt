@@ -5,5 +5,5 @@ import retrofit2.http.GET
 
 interface ForecastApi {
     @GET("forecast")
-    fun get4DaysForecast(): ForecastListEntity
+    suspend fun get4DaysForecast(): ForecastListEntity
 }

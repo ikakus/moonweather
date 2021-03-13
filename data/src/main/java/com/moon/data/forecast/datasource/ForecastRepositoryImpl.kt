@@ -4,7 +4,6 @@ import com.moon.data.ConnectivityProvider
 import com.moon.domain.forecast.ForecastRepository
 import com.moon.domain.forecast.model.ForecastListDomainModel
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 
 class ForecastRepositoryImpl(
@@ -14,18 +13,14 @@ class ForecastRepositoryImpl(
 ) : ForecastRepository {
     override fun get4DaysForecast(): Flow<ForecastListDomainModel> {
         return if (connectivityProvider.isInternetAvailable()) {
-            flow {
-                remoteForecastDataProvider.get4DaysForecast()
-                    .map { model ->
-                        localForecastDataProvider.put(model)
-                        model
-                    }
-            }
+            remoteForecastDataProvider.get4DaysForecast()
+                .map { model ->
+                    localForecastDataProvider.put(model)
+                    model
+                }
 
         } else {
-            flow {
-                localForecastDataProvider.get4DaysForecast()
-            }
+            localForecastDataProvider.get4DaysForecast()
         }
     }
 }

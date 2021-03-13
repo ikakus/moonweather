@@ -53,7 +53,6 @@ class ForecastFeature(
 //                }
 //                .startWith(Effect.Loading)
 //                .onErrorReturn { Effect.Error(it) }
-//            return flow { emit(Effect.DataLoaded(getMockedData().forecasts)) }
             return getForecastUseCase().map {
                 Effect.DataLoaded(it.forecasts)
             }

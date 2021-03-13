@@ -1,7 +1,5 @@
 package com.moon.data
 
-import com.squareup.moshi.Moshi
-import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import dagger.Module
 import dagger.Provides
 import okhttp3.OkHttpClient
@@ -17,11 +15,7 @@ class NetworkModule {
     @Provides
     fun provideRetrofit(client: OkHttpClient): Retrofit {
         return Retrofit.Builder()
-            .addConverterFactory(
-                MoshiConverterFactory.create(
-                    Moshi.Builder().add(KotlinJsonAdapterFactory()).build()
-                )
-            )
+            .addConverterFactory(MoshiConverterFactory.create())
             .baseUrl(API_HOSTNAME)
             .client(client)
             .build()

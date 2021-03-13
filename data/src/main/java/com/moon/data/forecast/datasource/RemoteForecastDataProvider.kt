@@ -8,6 +8,8 @@ import kotlinx.coroutines.flow.flow
 
 class RemoteForecastDataProvider(private val api: ForecastApi) : ForecastRepository {
     override fun get4DaysForecast(): Flow<ForecastListDomainModel> {
-        return flow { api.get4DaysForecast() }
+        return flow {
+            emit(api.get4DaysForecast())
+        }
     }
 }
