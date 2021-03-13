@@ -1,13 +1,13 @@
 package com.moon.domain.base
 
-import io.reactivex.Single
+import kotlinx.coroutines.flow.Flow
 
 interface UseCase<Arg, R> {
-    operator fun invoke(arg: Arg): Single<R>
+    operator fun invoke(arg: Arg): Flow<R>
 }
 
 interface NoArgUseCase<R> {
-    operator fun invoke(): Single<R>
+    operator fun invoke(): Flow<R>
 }
 
 interface NoArgSyncUseCase<R> {

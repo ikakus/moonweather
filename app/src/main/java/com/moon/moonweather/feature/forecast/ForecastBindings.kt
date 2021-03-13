@@ -8,21 +8,9 @@ import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.coroutines.flow.FlowCollector
 
-//class ForecastBindings(
-//    private val router: Router,
-//    private val feature: ForecastFeature,
-//) : ResumePauseBindings<ForecastFragment>() {
-//    override fun setup(view: ForecastFragment) {
-//        super.setup(view)
-////        binder?.bind(feature to view using UiModelTransformer(view.requireContext()))
-////        binder?.bind(view to feature using UiEventTransformer())
-////        binder?.bind(feature.news to NewsListener(view.context!!, router))
-//    }
-//}
-
 @FlowPreview
 @InternalCoroutinesApi
-class TestBinder(
+class ForecastBindings(
     private val feature: ForecastFeature,
 ) : Bindings<ForecastFragment>() {
 
@@ -32,10 +20,6 @@ class TestBinder(
         bind(view to feature using UiEventTransformer())
         bind(feature.news to NewsListener(view.context!!) using { it })
     }
-
-//    private fun bind(connection: Pair<Flow<ForecastFeature.News>, NewsListener>) {
-//        TODO("Not yet implemented")
-//    }
 }
 
 

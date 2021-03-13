@@ -3,6 +3,7 @@ package com.moon.moonweather.feature.forecast
 import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.lifecycleScope
 import androidx.viewpager.widget.PagerAdapter
 import com.moon.moonweather.R
 import com.moon.moonweather.common.base.BaseFragment
@@ -20,7 +21,7 @@ import javax.inject.Inject
 class ForecastFragment : BaseFragment<UiEvent, UiModel>(R.layout.fragment_forecast) {
 
     @Inject
-    lateinit var forecastBindings: TestBinder
+    lateinit var forecastBindings: ForecastBindings
 
     var adapter = ForecastInfoAdapter { placeName ->
 
@@ -37,7 +38,7 @@ class ForecastFragment : BaseFragment<UiEvent, UiModel>(R.layout.fragment_foreca
         super.onViewCreated(view, savedInstanceState)
 
         ForecastComponentProvider.get().inject(this)
-        forecastBindings.setup(this, GlobalScope)
+        forecastBindings.setup(this, lifecycleScope)
         pager.adapter = adapter
         tab_layout.setupWithViewPager(pager)
     }
@@ -55,6 +56,7 @@ class ForecastFragment : BaseFragment<UiEvent, UiModel>(R.layout.fragment_foreca
 
         loading(uiModel.loading)
     }
+
 }
 
 class ForecastInfoAdapter(

@@ -3,13 +3,12 @@ package com.moon.moonweather.feature.forecast
 import com.moon.domain.forecast.model.ForecastDomainModel
 import com.moon.domain.forecast.model.PlaceDomainModel
 import com.moon.domain.forecast.usecase.GetForecastUseCase
-import com.moon.moonweather.core.SchedulerProvider
 import com.moon.moonweather.vmiflow.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.map
 
 class ForecastFeature(
-    schedulerProvider: SchedulerProvider,
     getForecastUseCase: GetForecastUseCase
 ) : ActorReducerFlowFeature<
         ForecastFeature.Wish,
@@ -19,7 +18,7 @@ class ForecastFeature(
         >(
     initialState = State(loading = true),
     reducer = ReducerImpl(),
-    actor = ActorImpl(schedulerProvider, getForecastUseCase),
+    actor = ActorImpl(getForecastUseCase),
     newsPublisher = NewsPublisherImpl(),
     bootstrapper = BootstrapperImpl()
 ) {
@@ -36,7 +35,6 @@ class ForecastFeature(
     }
 
     private class ActorImpl(
-        private val schedulerProvider: SchedulerProvider,
         private val getForecastUseCase: GetForecastUseCase
     ) :
         Actor<State, Wish, Effect> {
@@ -55,7 +53,10 @@ class ForecastFeature(
 //                }
 //                .startWith(Effect.Loading)
 //                .onErrorReturn { Effect.Error(it) }
-            return flow { emit(Effect.NoEffect) }
+//            return flow { emit(Effect.DataLoaded(getMockedData().forecasts)) }
+            return getForecastUseCase().map {
+                Effect.DataLoaded(it.forecasts)
+            }
         }
     }
 

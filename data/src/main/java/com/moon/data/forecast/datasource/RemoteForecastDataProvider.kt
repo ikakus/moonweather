@@ -3,10 +3,11 @@ package com.moon.data.forecast.datasource
 import com.moon.data.ForecastApi
 import com.moon.domain.forecast.ForecastRepository
 import com.moon.domain.forecast.model.ForecastListDomainModel
-import io.reactivex.Single
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 
 class RemoteForecastDataProvider(private val api: ForecastApi) : ForecastRepository {
-    override fun get4DaysForecast(): Single<ForecastListDomainModel> {
-        return api.get4DaysForecast().map { it }
+    override fun get4DaysForecast(): Flow<ForecastListDomainModel> {
+        return flow { api.get4DaysForecast() }
     }
 }

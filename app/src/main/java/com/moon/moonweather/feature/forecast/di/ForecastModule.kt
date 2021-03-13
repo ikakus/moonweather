@@ -7,10 +7,9 @@ import com.moon.data.ForecastApi
 import com.moon.data.forecast.datasource.*
 import com.moon.domain.forecast.ForecastRepository
 import com.moon.domain.forecast.usecase.GetForecastUseCase
-import com.moon.moonweather.core.SchedulerProvider
 import com.moon.moonweather.core.di.Screen
+import com.moon.moonweather.feature.forecast.ForecastBindings
 import com.moon.moonweather.feature.forecast.ForecastFeature
-import com.moon.moonweather.feature.forecast.TestBinder
 import dagger.Module
 import dagger.Provides
 import kotlinx.coroutines.InternalCoroutinesApi
@@ -21,17 +20,16 @@ class ForecastModule {
     @InternalCoroutinesApi
     @Provides
     @Screen
-    fun bindings(router: Router, feature: ForecastFeature): TestBinder {
-        return TestBinder(feature)
+    fun bindings(router: Router, feature: ForecastFeature): ForecastBindings {
+        return ForecastBindings(feature)
     }
 
     @Provides
     @Screen
     fun provideForecastFeature(
-        schedulerProvider: SchedulerProvider,
         getForecastUseCase: GetForecastUseCase
     ): ForecastFeature {
-        return ForecastFeature(schedulerProvider, getForecastUseCase)
+        return ForecastFeature(getForecastUseCase)
     }
 
     @Provides

@@ -5,17 +5,18 @@ import com.moon.data.forecast.model.ForecastEntity
 import com.moon.data.forecast.model.ForecastListEntity
 import com.moon.domain.forecast.ForecastRepository
 import com.moon.domain.forecast.model.ForecastListDomainModel
-import io.reactivex.Single
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 
 class StubForecastDataProvider : ForecastRepository {
-    override fun get4DaysForecast(): Single<ForecastListDomainModel> {
-        return Single.just(getMockedData())
+    override fun get4DaysForecast(): Flow<ForecastListDomainModel> {
+        return flow { emit(getMockedData()) }
     }
 }
 
 fun getMockedData(): ForecastListDomainModel {
     val forecast = ForecastEntity(
-        date = "test Date",
+        date = "2021-02-24",
         day = DayEntity(
             peipsi = null,
             phenomenon = "phen",

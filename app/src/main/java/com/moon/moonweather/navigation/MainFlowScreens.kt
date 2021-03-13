@@ -5,11 +5,13 @@ import com.moon.domain.forecast.model.PlaceDomainModel
 import com.moon.moonweather.feature.TestFragment
 import com.moon.moonweather.feature.forecast.ForecastFragment
 import com.moon.moonweather.feature.placedetails.PlaceDetailsFragment
+import kotlinx.coroutines.InternalCoroutinesApi
 import ru.terrakok.cicerone.android.support.SupportAppScreen
 
 class MainFlowScreens {
 
     class ForecastScreen : SupportAppScreen() {
+        @InternalCoroutinesApi
         override fun getFragment(): Fragment {
             return ForecastFragment()
         }
