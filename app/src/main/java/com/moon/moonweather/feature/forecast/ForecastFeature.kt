@@ -4,9 +4,7 @@ import com.moon.domain.forecast.model.ForecastDomainModel
 import com.moon.domain.forecast.model.PlaceDomainModel
 import com.moon.domain.forecast.usecase.GetForecastUseCase
 import com.moon.moonweather.vmiflow.*
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.*
 
 class ForecastFeature(
     getForecastUseCase: GetForecastUseCase
@@ -16,7 +14,7 @@ class ForecastFeature(
         ForecastFeature.State,
         ForecastFeature.News
         >(
-    initialState = State(loading = true),
+    initialState = State(loading = false),
     reducer = ReducerImpl(),
     actor = ActorImpl(getForecastUseCase),
     newsPublisher = NewsPublisherImpl(),
@@ -44,17 +42,12 @@ class ForecastFeature(
         }
 
         private fun loadForecast(): Flow<Effect> {
-//            return getForecastUseCase()
-//                .subscribeOn(schedulerProvider.io())
-//                .observeOn(schedulerProvider.ui())
-//                .toObservable()
-//                .map {
-//                    Effect.DataLoaded(it.forecasts) as Effect
-//                }
-//                .startWith(Effect.Loading)
-//                .onErrorReturn { Effect.Error(it) }
             return getForecastUseCase().map {
                 Effect.DataLoaded(it.forecasts)
+            }.onStart {
+                Effect.Loading
+            }.catch { e ->
+                Effect.Error(e)
             }
         }
     }
