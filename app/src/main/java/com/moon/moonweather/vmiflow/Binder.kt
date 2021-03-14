@@ -39,7 +39,7 @@ abstract class Binder<U> {
         jobs.add(job)
     }
 
-    protected fun cancel() {
+    protected fun cancelJobs() {
         jobs.forEach { it.cancel() }
         jobs.clear()
     }

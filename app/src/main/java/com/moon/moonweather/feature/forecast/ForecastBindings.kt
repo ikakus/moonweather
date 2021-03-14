@@ -26,7 +26,7 @@ class ForecastBindings(
     }
 
     fun dispose() {
-        cancel()
+        cancelJobs()
     }
 
 }
