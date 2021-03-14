@@ -14,7 +14,7 @@ class ForecastFeature(
         ForecastFeature.State,
         ForecastFeature.News
         >(
-    initialState = State(loading = false),
+    initialState = State(loading = true),
     reducer = ReducerImpl(),
     actor = ActorImpl(getForecastUseCase),
     newsPublisher = NewsPublisherImpl(),
@@ -42,13 +42,15 @@ class ForecastFeature(
         }
 
         private fun loadForecast(): Flow<Effect> {
-            return getForecastUseCase().map {
-                Effect.DataLoaded(it.forecasts)
-            }.onStart {
-                Effect.Loading
-            }.catch { e ->
-                Effect.Error(e)
-            }
+            return getForecastUseCase()
+                .onStart {
+                    Effect.Loading
+                }.catch { e ->
+                    Effect.Error(e)
+                }
+                .map {
+                    Effect.DataLoaded(it.forecasts)
+                }
         }
     }
 
