@@ -5,7 +5,7 @@ import android.util.Log
 import android.widget.Toast
 import androidx.lifecycle.lifecycleScope
 import com.moon.moonweather.navigation.MainFlowScreens
-import com.moon.moonweather.vmiflow.Bindings
+import com.moon.moonweather.vmiflow.Binder
 import com.moon.moonweather.vmiflow.tag
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.InternalCoroutinesApi
@@ -17,7 +17,7 @@ import ru.terrakok.cicerone.Router
 class ForecastBindings(
     private val router: Router,
     private val feature: ForecastFeature,
-) : Bindings<ForecastFragment>() {
+) : Binder<ForecastFragment>() {
 
     override fun setup(view: ForecastFragment) {
         this.coroutineScope = view.lifecycleScope
@@ -29,8 +29,7 @@ class ForecastBindings(
 
     fun dispose() {
         cancel()
-        feature.jobbs.forEach { it.cancel() }
-        feature.jobbs.clear()
+        feature.cancel()
     }
 
 }

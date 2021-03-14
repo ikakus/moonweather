@@ -1,5 +1,7 @@
 package com.moon.moonweather.vmiflow
 
+import com.moon.moonweather.feature.forecast.ForecastFeature
+import com.moon.moonweather.feature.forecast.NewsListener
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.coroutines.Job
@@ -12,29 +14,38 @@ import kotlinx.coroutines.launch
 typealias Connection<In, Out> = Triple<Flow<Out>, FlowCollector<In>, (Out) -> In?>
 
 @InternalCoroutinesApi
-abstract class Bindings<U>() {
-    private var jobbs = HashSet<Job>()
+abstract class Binder<U>() {
+    var jobs = HashSet<Job>()
     protected lateinit var coroutineScope: CoroutineScope
     abstract fun setup(uiComponent: U)
 
-    protected fun <Out : Any, In : Any> bind(connection: Connection<In, Out>) {
+    protected fun <Out : Any, In : Any> bind(connection: Triple<Flow<Out>, FlowCollector<In>, (Out) -> In?>) {
         val (flow, collector, transformer) = connection
-        val jobb = coroutineScope.launch {
+        val job = coroutineScope.launch {
             flow.map { value -> transformer(value) }
                 .filterNotNull()
                 .collect(collector)
 
         }
-        jobbs.add(jobb)
+        jobs.add(job)
+    }
+
+
+    protected fun bind(connection: Pair<Flow<ForecastFeature.News>, NewsListener>) {
+        val (flow, collector) = connection
+        val job = coroutineScope.launch {
+            flow.filterNotNull()
+                .collect(collector)
+
+        }
+        jobs.add(job)
     }
 
     protected fun cancel() {
-        jobbs.forEach {
-            it.cancel()
-        }
-        jobbs.clear()
+        jobs.forEach { it.cancel() }
+        jobs.clear()
     }
 
     protected infix fun <Out, In> Pair<Flow<Out>, FlowCollector<In>>.using(transformer: (Out) -> In?) =
-        Connection(first, second, transformer)
+        Triple(first, second, transformer)
 }

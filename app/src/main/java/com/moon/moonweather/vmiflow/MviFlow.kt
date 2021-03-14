@@ -67,6 +67,11 @@ open class BaseFlowFeature<Wish, Action, Effect, State, News>(
 
     var jobbs = HashSet<Job>()
 
+    fun cancel() {
+        jobbs.forEach { it.cancel() }
+        jobbs.clear()
+    }
+
     @ExperimentalCoroutinesApi
     @InternalCoroutinesApi
     override suspend fun collect(collector: FlowCollector<State>) {
