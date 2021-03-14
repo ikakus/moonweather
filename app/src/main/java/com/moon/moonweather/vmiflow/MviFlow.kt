@@ -65,30 +65,24 @@ open class BaseFlowFeature<Wish, Action, Effect, State, News>(
         actionSubject.send(action)
     }
 
-    var jobbs = HashSet<Job>()
-
-    fun cancel() {
-        jobbs.forEach { it.cancel() }
-        jobbs.clear()
-    }
-
-    @ExperimentalCoroutinesApi
-    @InternalCoroutinesApi
-    override suspend fun collect(collector: FlowCollector<State>) {
-        val job1 = coroutineScope?.launch {
+    init {
+        GlobalScope.launch {
             actionSubject.asFlow().collect { action ->
                 actorWrapper.emit(Pair(state, action))
             }
         }
-        val job2 = coroutineScope?.launch {
+        GlobalScope.launch {
             actionSubject.let { output ->
                 bootstrapper?.invoke()?.collect {
                     output.send(it)
                 }
             }
         }
-        job1?.let { jobbs.add(it) }
-        job2?.let { jobbs.add(it) }
+    }
+
+    @ExperimentalCoroutinesApi
+    @InternalCoroutinesApi
+    override suspend fun collect(collector: FlowCollector<State>) {
         stateSubject.collect(collector)
     }
 
@@ -96,7 +90,6 @@ open class BaseFlowFeature<Wish, Action, Effect, State, News>(
         private val actor: Actor<State, Action, Effect>,
         private val reducerWrapper: ReducerWrapper<State, Action, Effect>
     ) : FlowCollector<Pair<State, Action>> {
-
 
         override suspend fun emit(value: Pair<State, Action>) {
 

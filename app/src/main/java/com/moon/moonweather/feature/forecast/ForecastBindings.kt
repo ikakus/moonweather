@@ -27,7 +27,6 @@ class ForecastBindings(
 
     fun dispose() {
         cancel()
-        feature.cancel()
     }
 
 }
