@@ -28,7 +28,7 @@ typealias PostProcessor<Action, Effect, State> =
 typealias NewsPublisher<Action, Effect, State, News> =
             (action: Action, effect: Effect, state: State) -> News?
 
-val tag = "TEST"
+private val tag = "BaseFlowFeature"
 
 @FlowPreview
 @ExperimentalCoroutinesApi

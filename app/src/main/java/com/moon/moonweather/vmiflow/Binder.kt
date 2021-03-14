@@ -11,10 +11,8 @@ import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
-typealias Connection<In, Out> = Triple<Flow<Out>, FlowCollector<In>, (Out) -> In?>
-
 @InternalCoroutinesApi
-abstract class Binder<U>() {
+abstract class Binder<U> {
     var jobs = HashSet<Job>()
     protected lateinit var coroutineScope: CoroutineScope
     abstract fun setup(uiComponent: U)
