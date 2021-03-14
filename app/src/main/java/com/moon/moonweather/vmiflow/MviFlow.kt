@@ -1,8 +1,8 @@
 package com.moon.moonweather.vmiflow
 
+import android.util.Log
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.BroadcastChannel
-import kotlinx.coroutines.channels.ConflatedBroadcastChannel
 import kotlinx.coroutines.flow.*
 
 
@@ -28,11 +28,13 @@ typealias PostProcessor<Action, Effect, State> =
 typealias NewsPublisher<Action, Effect, State, News> =
             (action: Action, effect: Effect, state: State) -> News?
 
+val tag = "TEST"
+
 @FlowPreview
 @ExperimentalCoroutinesApi
 open class BaseFlowFeature<Wish, Action, Effect, State, News>(
     initialState: State,
-    bootstrapper: Bootstrapper<Action>? = null,
+    private val bootstrapper: Bootstrapper<Action>? = null,
     private val wishToAction: WishToAction<Wish, Action>,
     actor: Actor<State, Action, Effect>,
     reducer: Reducer<State, Effect>,
@@ -40,30 +42,16 @@ open class BaseFlowFeature<Wish, Action, Effect, State, News>(
     newsPublisher: NewsPublisher<Action, Effect, State, News>? = null,
 ) : Feature<Wish, State, News> {
 
+    var coroutineScope: CoroutineScope? = null
     private val stateSubject = MutableStateFlow(initialState)
     private val actionSubject = BroadcastChannel<Action>(1)
-    private val newsSubject = ConflatedBroadcastChannel<News>()
+    private val newsSubject = BroadcastChannel<News>(1)
 
     private val newsPublisherWrapper = NewPublisherWrapper(newsPublisher, newsSubject)
     private val postProcessorWrapper = PostProcessorWrapper(postprocessor, actionSubject)
     private val reducerWrapper =
         ReducerWrapper(reducer, stateSubject, postProcessorWrapper, newsPublisherWrapper)
     private val actorWrapper = ActorWrapper(actor, reducerWrapper)
-
-    init {
-        GlobalScope.launch {
-            actionSubject.asFlow().collect { action ->
-                actorWrapper.emit(Pair(state, action))
-            }
-        }
-        GlobalScope.launch {
-            actionSubject.let { output ->
-                bootstrapper?.invoke()?.collect {
-                    output.send(it)
-                }
-            }
-        }
-    }
 
     override val state: State
         get() = stateSubject.value
@@ -77,9 +65,25 @@ open class BaseFlowFeature<Wish, Action, Effect, State, News>(
         actionSubject.send(action)
     }
 
+    var jobbs = HashSet<Job>()
+
     @ExperimentalCoroutinesApi
     @InternalCoroutinesApi
     override suspend fun collect(collector: FlowCollector<State>) {
+        val job1 = coroutineScope?.launch {
+            actionSubject.asFlow().collect { action ->
+                actorWrapper.emit(Pair(state, action))
+            }
+        }
+        val job2 = coroutineScope?.launch {
+            actionSubject.let { output ->
+                bootstrapper?.invoke()?.collect {
+                    output.send(it)
+                }
+            }
+        }
+        job1?.let { jobbs.add(it) }
+        job2?.let { jobbs.add(it) }
         stateSubject.collect(collector)
     }
 
@@ -88,7 +92,10 @@ open class BaseFlowFeature<Wish, Action, Effect, State, News>(
         private val reducerWrapper: ReducerWrapper<State, Action, Effect>
     ) : FlowCollector<Pair<State, Action>> {
 
+
         override suspend fun emit(value: Pair<State, Action>) {
+
+            Log.d(tag, this.toString() + value.second)
             val (state, action) = value
             actor(state, action).collect { effect ->
                 reducerWrapper.emit(Triple(state, action, effect))
@@ -104,6 +111,7 @@ open class BaseFlowFeature<Wish, Action, Effect, State, News>(
     ) : FlowCollector<Triple<State, Action, Effect>> {
 
         override suspend fun emit(value: Triple<State, Action, Effect>) {
+            Log.d(tag, this.toString())
             val (state, action, effect) = value
             val st = reducer.invoke(state, effect)
             stateSubject.emit(st)
@@ -117,6 +125,7 @@ open class BaseFlowFeature<Wish, Action, Effect, State, News>(
         private val actionSubject: BroadcastChannel<Action>
     ) : FlowCollector<Triple<Action, Effect, State>> {
         override suspend fun emit(value: Triple<Action, Effect, State>) {
+            Log.d(tag, this.toString())
             val (action, effect, state) = value
             postprocessor?.invoke(action, effect, state).let {
                 it?.let {
@@ -131,6 +140,7 @@ open class BaseFlowFeature<Wish, Action, Effect, State, News>(
         private val newsSubject: BroadcastChannel<News>
     ) : FlowCollector<Triple<Action, Effect, State>> {
         override suspend fun emit(value: Triple<Action, Effect, State>) {
+            Log.d(tag, this.toString())
             val (action, effect, state) = value
             newsPublisher?.invoke(action, effect, state).let {
                 it?.let {

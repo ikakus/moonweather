@@ -41,11 +41,19 @@ class ForecastFragment : BaseFragment<UiEvent, UiModel>(R.layout.fragment_foreca
         super.onViewCreated(view, savedInstanceState)
 
         ForecastComponentProvider.get().inject(this)
-        forecastBindings.setup(this)
         pager.adapter = adapter
         tab_layout.setupWithViewPager(pager)
     }
 
+    override fun onResume() {
+        super.onResume()
+        forecastBindings.setup(this)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        forecastBindings.dispose()
+    }
 
     override suspend fun emit(uiModel: UiModel) {
         uiModel.forecastDays?.let {

@@ -2,6 +2,7 @@ package com.moon.moonweather.vmiflow
 
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.InternalCoroutinesApi
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.flow.filterNotNull
@@ -12,17 +13,26 @@ typealias Connection<In, Out> = Triple<Flow<Out>, FlowCollector<In>, (Out) -> In
 
 @InternalCoroutinesApi
 abstract class Bindings<U>() {
+    private var jobbs = HashSet<Job>()
     protected lateinit var coroutineScope: CoroutineScope
     abstract fun setup(uiComponent: U)
 
     protected fun <Out : Any, In : Any> bind(connection: Connection<In, Out>) {
         val (flow, collector, transformer) = connection
-        coroutineScope.launch {
+        val jobb = coroutineScope.launch {
             flow.map { value -> transformer(value) }
                 .filterNotNull()
                 .collect(collector)
 
         }
+        jobbs.add(jobb)
+    }
+
+    protected fun cancel() {
+        jobbs.forEach {
+            it.cancel()
+        }
+        jobbs.clear()
     }
 
     protected infix fun <Out, In> Pair<Flow<Out>, FlowCollector<In>>.using(transformer: (Out) -> In?) =

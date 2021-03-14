@@ -1,10 +1,12 @@
 package com.moon.moonweather.feature.forecast
 
 import android.content.Context
+import android.util.Log
 import android.widget.Toast
 import androidx.lifecycle.lifecycleScope
 import com.moon.moonweather.navigation.MainFlowScreens
 import com.moon.moonweather.vmiflow.Bindings
+import com.moon.moonweather.vmiflow.tag
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.coroutines.flow.FlowCollector
@@ -19,17 +21,29 @@ class ForecastBindings(
 
     override fun setup(view: ForecastFragment) {
         this.coroutineScope = view.lifecycleScope
+        this.feature.coroutineScope = view.lifecycleScope
         bind(feature to view using UiModelTransformer(view.requireContext()))
         bind(view to feature using UiEventTransformer())
         bind(feature.news to NewsListener(view.context!!, router) using { it })
     }
+
+    fun dispose() {
+        cancel()
+        feature.jobbs.forEach { it.cancel() }
+        feature.jobbs.clear()
+    }
+
 }
 
 class UiEventTransformer : (UiEvent) -> ForecastFeature.Wish? {
-    override fun invoke(event: UiEvent): ForecastFeature.Wish? = when (event) {
+    override fun invoke(event: UiEvent): ForecastFeature.Wish? {
+        Log.d(tag, this.toString())
+        return when (event) {
 
-        is UiEvent.PlaceClicked -> {
-            ForecastFeature.Wish.ShowPlaceDetails(event.name)
+
+            is UiEvent.PlaceClicked -> {
+                ForecastFeature.Wish.ShowPlaceDetails(event.name)
+            }
         }
     }
 }
@@ -40,6 +54,7 @@ class NewsListener(
 ) : FlowCollector<ForecastFeature.News> {
 
     override suspend fun emit(news: ForecastFeature.News) {
+        Log.d(tag, this.toString() + news)
         when (news) {
             is ForecastFeature.News.PlaceWeatherDetails ->
                 router.navigateTo(MainFlowScreens.PlaceDetailsScreen(news.day, news.night))
