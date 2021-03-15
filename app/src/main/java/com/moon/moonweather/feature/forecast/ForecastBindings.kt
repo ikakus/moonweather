@@ -19,7 +19,6 @@ class ForecastBindings(
 
     override fun setup(view: ForecastFragment) {
         this.coroutineScope = view.lifecycleScope
-        this.feature.coroutineScope = view.lifecycleScope
         bind(feature to view using UiModelTransformer(view.requireContext()))
         bind(view to feature using UiEventTransformer())
         bind(feature.news to NewsListener(view.context!!, router) using { it })

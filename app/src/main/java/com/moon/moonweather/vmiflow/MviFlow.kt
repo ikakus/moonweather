@@ -4,6 +4,7 @@ import android.util.Log
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.BroadcastChannel
 import kotlinx.coroutines.flow.*
+import kotlin.coroutines.CoroutineContext
 
 
 interface Store<Wish, State> : FlowCollector<Wish>, Flow<State> {
@@ -40,9 +41,8 @@ open class BaseFlowFeature<Wish, Action, Effect, State, News>(
     reducer: Reducer<State, Effect>,
     postprocessor: PostProcessor<Action, Effect, State>? = null,
     newsPublisher: NewsPublisher<Action, Effect, State, News>? = null,
-) : Feature<Wish, State, News> {
+) : Feature<Wish, State, News>, CoroutineScope {
 
-    var coroutineScope: CoroutineScope? = null
     private val stateSubject = MutableStateFlow(initialState)
     private val actionSubject = BroadcastChannel<Action>(1)
     private val newsSubject = BroadcastChannel<News>(1)
@@ -65,19 +65,27 @@ open class BaseFlowFeature<Wish, Action, Effect, State, News>(
         actionSubject.send(action)
     }
 
+    private var job = Job()
+
+    override val coroutineContext: CoroutineContext
+        get() = Dispatchers.Default + job
+
     init {
-        GlobalScope.launch {
-            actionSubject.asFlow().collect { action ->
-                actorWrapper.emit(Pair(state, action))
-            }
+
+        this.launch {
+            actionSubject
+                .asFlow().collect { action ->
+                    actorWrapper.emit(Pair(state, action))
+                }
         }
-        GlobalScope.launch {
+        this.launch {
             actionSubject.let { output ->
                 bootstrapper?.invoke()?.collect {
                     output.send(it)
                 }
             }
         }
+
     }
 
     @ExperimentalCoroutinesApi
