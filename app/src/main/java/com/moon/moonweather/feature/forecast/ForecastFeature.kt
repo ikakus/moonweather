@@ -27,6 +27,7 @@ class ForecastFeature(
                 Effect.Loading -> state.copy(loading = true)
                 is Effect.DataLoaded -> state.copy(forecastData = effect.data, loading = false)
                 is Effect.Error -> state.copy(loading = false)
+                is Effect.SelectDay -> state.copy(selectedDay = effect.day)
                 else -> state
             }
         }
@@ -38,6 +39,12 @@ class ForecastFeature(
         Actor<State, Wish, Effect> {
         override fun invoke(state: State, wish: Wish): Flow<Effect> = when (wish) {
             Wish.LoadData -> loadForecast()
+            is Wish.SelectDay -> flow {
+                val selection =  state.forecastData?.find { it.date == wish.day }
+                selection?.let {
+                    emit(Effect.SelectDay(selection))
+                }
+            }
             else -> flow { emit(Effect.NoEffect) }
         }
 
@@ -75,6 +82,7 @@ class ForecastFeature(
     sealed class Wish {
         object LoadData : Wish()
         data class ShowPlaceDetails(val name: String) : Wish()
+        data class SelectDay(val day: String): Wish()
     }
 
     sealed class Effect {
@@ -82,11 +90,13 @@ class ForecastFeature(
         object NoEffect : Effect()
         data class Error(val throwable: Throwable) : Effect()
         data class DataLoaded(val data: List<ForecastDomainModel>) : Effect()
+        data class SelectDay(val day: ForecastDomainModel): Effect()
     }
 
     data class State(
         val loading: Boolean = false,
-        val forecastData: List<ForecastDomainModel>? = null
+        val forecastData: List<ForecastDomainModel>? = null,
+        val selectedDay: ForecastDomainModel? = null
     )
 
     sealed class News {

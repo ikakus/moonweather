@@ -2,14 +2,11 @@ package com.moon.moonweather.feature.forecast
 
 import android.os.Bundle
 import android.view.View
-import android.view.ViewGroup
 import androidx.lifecycle.lifecycleScope
-import androidx.viewpager.widget.PagerAdapter
+import androidx.viewpager.widget.ViewPager
 import com.moon.moonweather.R
 import com.moon.moonweather.common.base.BaseFragment
-import com.moon.moonweather.common.views.loading
 import com.moon.moonweather.componentprovider.forecast.ForecastComponentProvider
-import com.moon.moonweather.feature.forecast.views.ForecastInfoView
 import kotlinx.android.synthetic.main.fragment_forecast.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
@@ -40,6 +37,26 @@ class ForecastFragment : BaseFragment<UiEvent, UiModel>(R.layout.fragment_foreca
         super.onViewCreated(view, savedInstanceState)
         ForecastComponentProvider.get().inject(this)
         pager.adapter = adapter
+        pager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener{
+            override fun onPageScrolled(
+                position: Int,
+                positionOffset: Float,
+                positionOffsetPixels: Int
+            ) {
+            }
+
+            override fun onPageSelected(position: Int) {
+
+                lifecycleScope.launch {
+                    val day = adapter.forecastDays[position]
+                    uiEvents.send(UiEvent.PagerDaySelected(day))
+                }
+            }
+
+            override fun onPageScrollStateChanged(state: Int) {
+            }
+
+        })
         tab_layout.setupWithViewPager(pager)
         forecastBindings.setup(this)
     }
@@ -52,43 +69,22 @@ class ForecastFragment : BaseFragment<UiEvent, UiModel>(R.layout.fragment_foreca
                 adapter.forecastDays = it
                 adapter.notifyDataSetChanged()
             }
+
+            uiModel.selectedDay?.let { day ->
+                val position = adapter.getItemPosition(day)
+                pager.currentItem = position
+            }
         }
 
-        loading(uiModel.loading)
+        loading_verlay.show(uiModel.loading)
     }
 
 }
 
-class ForecastInfoAdapter(
-    var forecastDays: List<ForecastDayUiModel> = emptyList(),
-    private val clickListener: ((String) -> Unit?)
-) : PagerAdapter() {
-    override fun getCount(): Int {
-        return forecastDays.size
-    }
-
-    override fun isViewFromObject(view: View, obj: Any): Boolean {
-        return view == obj
-    }
-
-    override fun instantiateItem(container: ViewGroup, position: Int): Any {
-        val view = ForecastInfoView(container.context).apply {
-            setData(forecastDays[position])
-            this.placeClickListener = clickListener
-        }
-        container.addView(view)
-        return view
-    }
-
-    override fun getPageTitle(position: Int): CharSequence {
-        return forecastDays[position].dateTitle
-    }
-
-    override fun getItemPosition(obj: Any): Int {
-        return POSITION_NONE
-    }
-
-    override fun destroyItem(container: ViewGroup, position: Int, obj: Any) {
-        container.removeView(obj as View?)
+private fun View.show(show: Boolean) {
+    visibility = if(show){
+        View.VISIBLE
+    }else{
+        View.GONE
     }
 }

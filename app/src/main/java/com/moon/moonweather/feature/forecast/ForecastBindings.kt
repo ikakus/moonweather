@@ -25,7 +25,7 @@ class ForecastBindings(
         view.lifecycle.addObserver(this)
         bind(feature to view using UiModelTransformer(view.requireContext()))
         bind(view to feature using UiEventTransformer())
-        bind(feature.news to NewsListener(view.context!!, router) using { it })
+        bind(feature.news to NewsListener(view.requireContext(), router) using { it })
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
@@ -42,6 +42,9 @@ class UiEventTransformer : (UiEvent) -> ForecastFeature.Wish? {
 
             is UiEvent.PlaceClicked -> {
                 ForecastFeature.Wish.ShowPlaceDetails(event.name)
+            }
+            is UiEvent.PagerDaySelected -> {
+                ForecastFeature.Wish.SelectDay(event.pageDay.id)
             }
         }
     }

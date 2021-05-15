@@ -14,7 +14,8 @@ class UiModelTransformer(val context: Context) : (ForecastFeature.State) -> UiMo
     override fun invoke(state: ForecastFeature.State): UiModel {
         return UiModel(
             loading = state.loading,
-            forecastDays = state.forecastData?.map { it.mapToUi() }
+            forecastDays = state.forecastData?.map { it.mapToUi() },
+            selectedDay = state.selectedDay?.mapToUi()
         )
     }
 }
@@ -26,6 +27,7 @@ private fun ForecastDomainModel.mapToUi(): ForecastDayUiModel {
     val tempFormatter = DegreesToHuman()
 
     return ForecastDayUiModel(
+        id = date,
         dateTitle = dateFormatter.parseDate(date),
         day = ForecastUiModel(
             text = day.text,
@@ -49,14 +51,17 @@ private fun ForecastDomainModel.mapToUi(): ForecastDayUiModel {
 
 sealed class UiEvent {
     data class PlaceClicked(val name: String) : UiEvent()
+    data class PagerDaySelected(val pageDay: ForecastDayUiModel) : UiEvent()
 }
 
 data class UiModel(
     val loading: Boolean,
-    val forecastDays: List<ForecastDayUiModel>?
+    val forecastDays: List<ForecastDayUiModel>?,
+    val selectedDay: ForecastDayUiModel?
 )
 
 data class ForecastDayUiModel(
+    val id: String,
     val dateTitle: String,
     val day: ForecastUiModel,
     val night: ForecastUiModel,
