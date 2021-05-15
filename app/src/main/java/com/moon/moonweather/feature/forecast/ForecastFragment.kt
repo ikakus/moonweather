@@ -44,11 +44,6 @@ class ForecastFragment : BaseFragment<UiEvent, UiModel>(R.layout.fragment_foreca
         forecastBindings.setup(this)
     }
 
-    override fun onPause() {
-        super.onPause()
-        forecastBindings.dispose()
-    }
-
     override suspend fun emit(uiModel: UiModel) {
         uiModel.forecastDays?.let {
 

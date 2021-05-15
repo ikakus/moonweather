@@ -13,7 +13,7 @@ import kotlinx.coroutines.launch
 
 @InternalCoroutinesApi
 abstract class Binder<U> {
-    var jobs = HashSet<Job>()
+    private var jobs = HashSet<Job>()
     protected lateinit var coroutineScope: CoroutineScope
     abstract fun setup(uiComponent: U)
 
@@ -28,7 +28,6 @@ abstract class Binder<U> {
         jobs.add(job)
     }
 
-
     protected fun bind(connection: Pair<Flow<ForecastFeature.News>, NewsListener>) {
         val (flow, collector) = connection
         val job = coroutineScope.launch {
@@ -39,7 +38,7 @@ abstract class Binder<U> {
         jobs.add(job)
     }
 
-    protected fun cancelJobs() {
+    protected fun dispose() {
         jobs.forEach { it.cancel() }
         jobs.clear()
     }

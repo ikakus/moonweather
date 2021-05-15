@@ -2,6 +2,9 @@ package com.moon.moonweather.feature.forecast
 
 import android.content.Context
 import android.widget.Toast
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleObserver
+import androidx.lifecycle.OnLifecycleEvent
 import androidx.lifecycle.lifecycleScope
 import com.moon.moonweather.navigation.MainFlowScreens
 import com.moon.moonweather.vmiflow.Binder
@@ -15,17 +18,19 @@ import ru.terrakok.cicerone.Router
 class ForecastBindings(
     private val router: Router,
     private val feature: ForecastFeature,
-) : Binder<ForecastFragment>() {
+) : Binder<ForecastFragment>(), LifecycleObserver {
 
     override fun setup(view: ForecastFragment) {
         this.coroutineScope = view.lifecycleScope
+        view.lifecycle.addObserver(this)
         bind(feature to view using UiModelTransformer(view.requireContext()))
         bind(view to feature using UiEventTransformer())
         bind(feature.news to NewsListener(view.context!!, router) using { it })
     }
 
-    fun dispose() {
-        cancelJobs()
+    @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
+    private fun disposeOnPause() {
+        dispose()
     }
 
 }

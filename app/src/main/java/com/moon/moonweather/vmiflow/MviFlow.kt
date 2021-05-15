@@ -31,6 +31,14 @@ typealias NewsPublisher<Action, Effect, State, News> =
 
 private val tag = "BaseFlowFeature"
 
+class FeatureScope : CoroutineScope {
+
+    val job = Job()
+
+    override val coroutineContext: CoroutineContext
+        get() = Dispatchers.Default + job
+}
+
 @FlowPreview
 @ExperimentalCoroutinesApi
 open class BaseFlowFeature<Wish, Action, Effect, State, News>(
@@ -41,7 +49,7 @@ open class BaseFlowFeature<Wish, Action, Effect, State, News>(
     reducer: Reducer<State, Effect>,
     postprocessor: PostProcessor<Action, Effect, State>? = null,
     newsPublisher: NewsPublisher<Action, Effect, State, News>? = null,
-) : Feature<Wish, State, News>, CoroutineScope {
+) : Feature<Wish, State, News> {
 
     private val stateSubject = MutableStateFlow(initialState)
     private val actionSubject = BroadcastChannel<Action>(1)
@@ -65,20 +73,17 @@ open class BaseFlowFeature<Wish, Action, Effect, State, News>(
         actionSubject.send(action)
     }
 
-    private var job = Job()
-
-    override val coroutineContext: CoroutineContext
-        get() = Dispatchers.Default + job
+    val scope = FeatureScope()
 
     init {
 
-        this.launch {
+        scope.launch {
             actionSubject
                 .asFlow().collect { action ->
                     actorWrapper.emit(Pair(state, action))
                 }
         }
-        this.launch {
+        scope.launch {
             actionSubject.let { output ->
                 bootstrapper?.invoke()?.collect {
                     output.send(it)
